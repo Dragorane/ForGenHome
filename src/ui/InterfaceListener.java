@@ -2,16 +2,18 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import controllers.FileController;
-import project.MainLauncher;
 import project.GenomeCounter;
+import project.MainLauncher;
 
 public class InterfaceListener implements ActionListener {
 
 	Interface ihm;
 	Thread t;
 	Thread t2;
+	Vector<Thread> vt = new Vector<Thread>();
 	
 	public InterfaceListener(Interface ihm)
 	{
@@ -50,7 +52,15 @@ public class InterfaceListener implements ActionListener {
 		        		MainLauncher.fichiersBioinfo.add("viruses.txt");
 		        	}
 	        		FileController.cleaning();
-	        		GenomeCounter.demarrerTraitement(ihm);
+	        		
+	        		for(String f : MainLauncher.fichiersBioinfo) {
+	        			//System.out.println("Test fichier f : " + f);
+	        			vt.add(new GenomeCounter(ihm, f));
+	        		}
+	        		
+	        		for(Thread tTemp : vt) {
+	        			tTemp.start();
+	        		}
 		        }
 		      };
 		      t.start();
@@ -63,9 +73,18 @@ public class InterfaceListener implements ActionListener {
 		        public void run() 
 		        {
 		        	t.interrupt();
+		        	
+		        	for(Thread tTemp : vt) {
+	        			tTemp.interrupt();
+	        		}
+		        	
 		        	try 
 					{
 						t.join();
+						
+						for(Thread tTemp : vt) {
+		        			tTemp.join();
+		        		}
 					}
 					catch (InterruptedException e1) {}
 		        	finally {

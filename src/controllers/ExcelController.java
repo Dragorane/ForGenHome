@@ -43,16 +43,18 @@ public class ExcelController
 			return excel;
 		}
 		catch(Exception e) {
+			System.out.println("Debug ExcelController : " + e.getMessage());
 			return null;
 		}
 	}
 
-	//Creating a new excel file by using our starting file : clean.xls
+	//Creating a new excel file by using our starting file : base.xls
 	public static ExcelController newExcel(String nom) throws IOException, InvalidFormatException
 	{
 		ExcelController res = new ExcelController();
 		
 		try {
+			//System.out.println("Test nom newExcel : " + nom);
 			res.wb = WorkbookFactory.create(new File("base.xls"));
 			res.sheet = res.wb.getSheet("Resultat");
 			res.name = nom;
@@ -61,6 +63,7 @@ public class ExcelController
 			return res;
 		}
 		catch(Exception e) {
+			System.out.println("Debug newExcel : " + e.getMessage() + " error : " + e.toString());
 			return null;
 		}
 	}

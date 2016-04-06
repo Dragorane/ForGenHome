@@ -96,6 +96,7 @@ public class Interface extends JFrame
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);//autoscrolling
 		
 		jsp_feedback = new JScrollPane(this.log_area);
+        
 	    JScrollBar scrollBar = jsp_feedback.getVerticalScrollBar();
 	    final BoundedRangeModel model = scrollBar.getModel();
 	      scrollBar.addAdjustmentListener(new AdjustmentListener() {
@@ -105,7 +106,7 @@ public class Interface extends JFrame
 	               caret.setDot(log_area.getText().length());
 	               caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	            } else {
-	               caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+	               caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	            }
 	         }
 	      });

@@ -24,7 +24,7 @@ public class FileController
 	// Cleaning all excel files
 	public static void cleaning() 
 	{
-		File etat = new File("state.txt");
+		File etat = new File("/Data/state.txt");
 		
 		if(etat.exists())
 		{
@@ -132,21 +132,21 @@ public class FileController
 	}
 
 	//Saving the state
-	public static void enregistrer(StateController etat) 
+	public static void enregistrer(StateController etat, String file) 
 	{
 		FileWriter fw = null;
 		BufferedWriter output = null;
 		try 
 		{
-			fw = new FileWriter("state.txt", false);
+			fw = new FileWriter("state_"+file, false);
 			output = new BufferedWriter(fw);
-			output.write(etat.getFileNumber()+"\n");
 			output.write(etat.getLineNumber()+"\n");
 			output.write(etat.getRefSeqNumber()+"\n");			
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
+			System.out.println("Erreur enregistrer : " + e.toString());
 		}
 		finally
 		{
@@ -158,6 +158,7 @@ public class FileController
 			catch (IOException e)
 			{
 				e.printStackTrace();
+				System.out.println("Erreur enregistrer : " + e.toString());
 			}
 		
 		}
@@ -165,12 +166,13 @@ public class FileController
 	}
 
 	//Retrieving the state we saved and creating a new one with these informations
-	public static StateController retrieveState() 
+	public static StateController retrieveState(String file) 
 	{
 		StateController res = null;
 
-		File etat = new File("state.txt");
-
+		File etat = new File("state_"+file);
+		//System.out.println("Test File etat : " + etat.getName());
+		
 		if (etat.exists()) 
 		{
 			//System.out.println("Une sauvegarde a ete trouve !");
@@ -180,14 +182,13 @@ public class FileController
 			try 
 			{ 
 				sc = new Scanner(etat);
-				int fichier = Integer.parseInt(sc.nextLine());
 				int ligne = Integer.parseInt(sc.nextLine());
 
-				res = new StateController(fichier,ligne);
+				res = new StateController(file,ligne);
 			} 
 			catch (Exception ex) 
 			{
-				System.out.println(ex);
+				System.out.println("Erreur retrieveState : " + ex.toString());
 			} 
 			finally
 			{
@@ -212,6 +213,10 @@ public class FileController
 	{
 		String nomFichier = "";
 		long nbSeq = 0;
+		
+		//System.out.println("Debug type : " + type);
+		//System.out.println("Debug nomDossier : " + nomDossier);
+		//System.out.println("Debug genome : " + genome.toString());
 		
 		if(type.equals("chrom"))
 		{
@@ -244,6 +249,8 @@ public class FileController
 			bewFile(nomDossier);
 		}
 		
+		//System.out.println("Debug fichier exists : " + fichier.exists());
+		
 		if (fichier.exists()) 
 		{
 			excel = ExcelController.openingExistingFile(nomFichier);
@@ -251,8 +258,12 @@ public class FileController
 		else 
 		{
 			excel = ExcelController.newExcel(nomFichier);
+			//System.out.println("Debug excel : " + excel.toString());
 		}
 	
+		//System.out.println("Debug resultats : " + resultats.toString());
+		//System.out.println("Debug excel name : " + excel.name);
+		
 		excel.writingResults(resultats);
 		
 		excel.addingNbSeq(nbSeq);
@@ -282,7 +293,7 @@ public class FileController
 
 	public static void createUpdateFile2(String string, Genome genome) {
 		Path p = Paths.get(string);
-		System.out.println(p.toString());
+		System.out.println("Test createUpdateFile2 : " + p.toString());
 		if(java.nio.file.Files.exists(p))
 		{
 			try {

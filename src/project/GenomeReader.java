@@ -42,39 +42,38 @@ public class GenomeReader
 	static Interface ihm_log = null;
 
 	// Liste des fichiers e telecharger
-	static ArrayList<String> files = MainLauncher.fichiersBioinfo;
+	//static ArrayList<String> files = MainLauncher.fichiersBioinfo;
 
 	/*
 	 * Public functions
 	 */
 
 	//Getting different files on the ncbi's website
-	public void getFiles(Interface i)
+	public void getFiles(Interface i, String file)
 	{
 		ihm_log = i;
 		try
 		{
-			for(String f : files)
+			File tmpFile = new File(file);
+			//System.out.println("Test File : " + tmpFile.toString());
+			
+			if (!tmpFile.exists())
 			{
-				File file = new File(f);
-
-				if (!file.exists())
+				ihm_log.addLog("--- Telechargement de " + tmpFile.getName() + " ---");
+				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
+				// Verification du nom de fichier pour telecharger la bonne liste
+				if(tmpFile.getName().equals("prokaryotes.txt"))
 				{
-					ihm_log.addLog("Telechargement de " + file.getName());
-					ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
-					// Verification du nom de fichier pour telecharger la bonne liste
-					 if(f.equals("prokaryotes.txt"))
-					{
-						DownloadTool.getFile(LINK_LIST_PROK, "prokaryotes.txt");
-					}
-					else if(f.equals("eukaryotes.txt"))
-					{
-						DownloadTool.getFile(LINK_LIST_EUKA, "eukaryotes.txt");
-					}
-					else if(f.equals("viruses.txt"))
-					{
-						DownloadTool.getFile(LINK_LIST_VIRUSES, "viruses.txt");
-					}
+					//System.out.println("Test prokaryotes");
+					DownloadTool.getFile(LINK_LIST_PROK, "prokaryotes.txt");
+				}
+				else if(tmpFile.getName().equals("eukaryotes.txt"))
+				{
+					DownloadTool.getFile(LINK_LIST_EUKA, "eukaryotes.txt");
+				}
+				else if(tmpFile.getName().equals("viruses.txt"))
+				{
+					DownloadTool.getFile(LINK_LIST_VIRUSES, "viruses.txt");
 				}
 			}
 		}
@@ -91,7 +90,8 @@ public class GenomeReader
 		ihm_log.progress_bar.setString(ihm_log.progress_bar.getValue()+ " / "+ihm_log.progress_bar.getMaximum());
 		Genome genome;
 
-		File fichier = new File(etat.getNomFichier());
+		//System.out.println("Test etat getNomFichier : " + etat.getNomFichier());
+		File fichier = new File(etat.getNomFichier()); 
 		Scanner sc = new Scanner(fichier);
 		String ligneCourante = "";
 
@@ -358,20 +358,31 @@ public class GenomeReader
 	{
 		try
 		{
-			Connection co = Jsoup.connect(LINK_BIOPROJECT + genome.getBioproject()).timeout(1000000);
-			Document doc = co.get();
-			Elements elements = doc.getElementsByAttributeValue("title","Genome assembly info");
-			Element content = elements.first();
-			if(content!=null)
-			{
-				String gcf =content.text();
-				genome.setGcf(gcf);
+			if(genome!=null && genome.getBioproject()!=null) {
+				Connection co = Jsoup.connect(LINK_BIOPROJECT + genome.getBioproject()).timeout(1000000);
+				Document doc = co.get();
+				Elements elements = doc.getElementsByAttributeValue("title","Genome assembly info");
+				Element content = elements.first();
+				if(content!=null)
+				{
+					String gcf =content.text();
+					genome.setGcf(gcf);
+				}
 			}
 		}
 
 		catch (IOException e)
 		{
+			System.out.println("Erreur recupererGCF : " + e.toString());
 			e.printStackTrace();
+			try {
+        		ihm_log.addLog("Erreur de connexion");
+        		ihm_log.addLog("Tentative de relance dans 5 secondes");
+				Thread.sleep(5000);
+				recupererGCF(genome);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -380,57 +391,59 @@ public class GenomeReader
 	{
 		try
 		{
-			Connection co = Jsoup.connect(LINK_ASSEMBLY + genome.getGcf()).timeout(1000000);
-			Document doc = co.get();
-
-			Element asm = doc.getElementById("asm_Primary_Assembly");
-			Elements tr;
-			if(asm!=null)
-			{
-				tr = asm.getElementsByTag("tr");
-				for (Element e : tr)
+			if(genome!=null && genome.getGcf()!=null) {
+				Connection co = Jsoup.connect(LINK_ASSEMBLY + genome.getGcf()).timeout(1000000);
+				Document doc = co.get();
+	
+				Element asm = doc.getElementById("asm_Primary_Assembly");
+				Elements tr;
+				if(asm!=null)
 				{
-					Elements td = e.getElementsByTag("td");
-					if(!td.isEmpty())
+					tr = asm.getElementsByTag("tr");
+					for (Element e : tr)
 					{
-						if(td.get(0).text().contains("Chromosome"))
+						Elements td = e.getElementsByTag("td");
+						if(!td.isEmpty())
 						{
-							String refseq = td.get(3).text();
-							if(!refseq.equals("n/a"))
+							if(td.get(0).text().contains("Chromosome"))
 							{
-								String[] res = {refseq, "chrom"};
-								genome.getRefseq().add(res);
+								String refseq = td.get(3).text();
+								if(!refseq.equals("n/a"))
+								{
+									String[] res = {refseq, "chrom"};
+									genome.getRefseq().add(res);
+								}
 							}
 						}
 					}
 				}
-			}
-
-			asm = doc.getElementById("asm_non-nuclear");
-			if(asm!=null)
-			{
-				tr = asm.getElementsByTag("tr");
-				for (Element e : tr)
+	
+				asm = doc.getElementById("asm_non-nuclear");
+				if(asm!=null)
 				{
-					Elements td = e.getElementsByTag("td");
-					if(!td.isEmpty())
+					tr = asm.getElementsByTag("tr");
+					for (Element e : tr)
 					{
-						if(td.get(0).text().contains("Mitochondrion"))
+						Elements td = e.getElementsByTag("td");
+						if(!td.isEmpty())
 						{
-							String refseq = td.get(3).text();
-							if(!refseq.equals("n/a") )
+							if(td.get(0).text().contains("Mitochondrion"))
 							{
-								String[] res = {refseq, "mito"};
-								genome.getRefseq().add(res);
+								String refseq = td.get(3).text();
+								if(!refseq.equals("n/a") )
+								{
+									String[] res = {refseq, "mito"};
+									genome.getRefseq().add(res);
+								}
 							}
-						}
-						else if(td.get(0).text().contains("Chloroplast"))
-						{
-							String refseq = td.get(3).text();
-							if(!refseq.equals("n/a"))
+							else if(td.get(0).text().contains("Chloroplast"))
 							{
-								String[] res = {refseq, "chloro"};
-								genome.getRefseq().add(res);
+								String refseq = td.get(3).text();
+								if(!refseq.equals("n/a"))
+								{
+									String[] res = {refseq, "chloro"};
+									genome.getRefseq().add(res);
+								}
 							}
 						}
 					}
@@ -439,7 +452,16 @@ public class GenomeReader
 		}
 		catch (Exception ex)
 		{
+			System.out.println("Erreur dans recupererRefSeqEuka : " + ex.toString());
 			ex.printStackTrace();
+			try {
+        		ihm_log.addLog("Erreur de connexion");
+        		ihm_log.addLog("Tentative de relance dans 5 secondes");
+				Thread.sleep(5000);
+				recupererRefSeqEuka(genome);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -449,78 +471,94 @@ public class GenomeReader
          System.out.println(genome.getBioproject());
          try
          {
-             Document doc = Jsoup.connect("http://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject()).get();
-             Elements elements = doc.getElementsByTag("a");
-             if(elements!=null)
-             {
-                 for (Element e : elements)
-                 {
-                   String linkHref = e.attr("href");
-
-                   if(linkHref.startsWith("/nuccore/NC"))
-                   {
-                       String refseq = e.text();
-
-                       String[] res = {refseq, "chrom"};
-                       genome.getRefseq().add(res);
-                   }
-                   else if(linkHref.startsWith("/nuccore/"))
-                   {
-                       System.out.println(linkHref);
-                       Document doc2 = Jsoup.connect("http://www.ncbi.nlm.nih.gov" + linkHref).get();
-
-                       // If we only need to download one file
-                       if(e.text().equals("1"))
-                       {
-                           Elements elements3 = doc2.getElementsByClass("itemid");
-
-                           if(elements3 != null)
-                           {
-                               for(Element e3 : elements3)
-                               {
-                                   String tmpString3 = e3.text();
-
-                                   if(tmpString3.startsWith("NCBI Reference Sequence"))
-                                   {
-                                       String[] res3 = tmpString3.split(": ");
-                                       String refseq = res3[res3.length - 1];
-                                       System.out.println("refseq : " + refseq);
-                                       String[] res = {refseq, "chrom"};
-                                       genome.getRefseq().add(res);
-                                       //ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
-                                   }
-                               }
-                           }
-                       }
-                       // We have to download more than one file
-                       else {
-                           Elements elements2 = doc2.getElementsByTag("a");
-
-                           if(elements2 != null)
-                           {
-                               for(Element e2 : elements2)
-                               {
-                                   String linkHref2 = e2.attr("href");
-
-                                   if(linkHref2.startsWith("/nuccore/NC"))
-                                   {
-                                       String tmpString = e2.attr("href");
-                                       String refseq = tmpString.split("/")[tmpString.split("/").length - 1];
-                                       System.out.println("refseq : " + refseq);
-                                       String[] res = {refseq, "chrom"};
-                                       //ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
-                                       genome.getRefseq().add(res);
-                                   }
-                               }
-                           }
-                       }
-                   }
-                }
-             }
+        	 if(genome!=null && genome.getBioproject()!=null) {
+	             Document doc = Jsoup.connect("http://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject()).timeout(1000000).get();
+	             Elements elements = doc.getElementsByTag("a");
+	             if(elements!=null)
+	             {
+	                 for (Element e : elements)
+	                 {
+	                   String linkHref = e.attr("href");
+	
+	                   if(linkHref.startsWith("/nuccore/NC"))
+	                   {
+	                       String refseq = e.text();
+	
+	                       String[] res = {refseq, "chrom"};
+	                       genome.getRefseq().add(res);
+	                   }
+	                   else if(linkHref.startsWith("/nuccore/"))
+	                   {
+	                	   try {
+		                       System.out.println(linkHref);
+		                       Document doc2 = Jsoup.connect("http://www.ncbi.nlm.nih.gov" + linkHref).timeout(1000000).get();
+		
+		                       // If we only need to download one file
+		                       if(e.text().equals("1"))
+		                       {
+		                           Elements elements3 = doc2.getElementsByClass("itemid");
+		
+		                           if(elements3 != null)
+		                           {
+		                               for(Element e3 : elements3)
+		                               {
+		                                   String tmpString3 = e3.text();
+		
+		                                   if(tmpString3.startsWith("NCBI Reference Sequence"))
+		                                   {
+		                                       String[] res3 = tmpString3.split(": ");
+		                                       String refseq = res3[res3.length - 1];
+		                                       System.out.println("refseq : " + refseq);
+		                                       String[] res = {refseq, "chrom"};
+		                                       genome.getRefseq().add(res);
+		                                       //ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
+		                                   }
+		                               }
+		                           }
+		                       }
+		                       // We have to download more than one file
+		                       else {
+		                           Elements elements2 = doc2.getElementsByTag("a");
+		
+		                           if(elements2 != null)
+		                           {
+		                               for(Element e2 : elements2)
+		                               {
+		                                   String linkHref2 = e2.attr("href");
+		
+		                                   if(linkHref2.startsWith("/nuccore/NC"))
+		                                   {
+		                                       String tmpString = e2.attr("href");
+		                                       String refseq = tmpString.split("/")[tmpString.split("/").length - 1];
+		                                       System.out.println("refseq : " + refseq);
+		                                       String[] res = {refseq, "chrom"};
+		                                       //ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
+		                                       genome.getRefseq().add(res);
+		                                   }
+		                               }
+		                           }
+		                       }
+	                	   } catch (Exception ex2) {
+	                		   System.out.println("Erreur de connexion boucle recupererRefSeqVir : " + ex2.toString());
+	                		   ex2.printStackTrace();
+	                	   }
+	                   }
+	                }
+	             }
+        	 }
          }
          catch (Exception ex)
          {
-                 System.out.println(ex);
+        	 System.out.println("Erreur recupererRefSeqVir : " + ex.toString());
+        	 ex.printStackTrace();
+        	 try {
+         		ihm_log.addLog("Erreur de connexion");
+         		ihm_log.addLog("Tentative de relance dans 5 secondes");
+ 				Thread.sleep(5000);
+ 				recupererRefSeqEuka(genome);
+ 			} catch (InterruptedException e1) {
+ 				e1.printStackTrace();
+ 			}
          }
      }
 }

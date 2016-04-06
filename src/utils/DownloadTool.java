@@ -65,7 +65,7 @@ public class DownloadTool
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-            e.printStackTrace(); 
+            System.out.println("Erreur getFile : " + e.toString()); 
         }
         finally
         {

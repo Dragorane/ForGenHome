@@ -15,53 +15,47 @@ import project.MainLauncher;
 
 public class StateController  
 {	
-	/*Un etat est constitue du numero de fichier en cours, de la ligne dans ce fichier
+	/*Un etat est constitue du nom de fichier en cours, de la ligne dans ce fichier
 	ainsi que le numero de sequence en cours */
-	@Getter @Setter int fileNumber; 
+	@Getter @Setter String fileName;
 	@Getter @Setter int lineNumber;
 	@Getter @Setter int refSeqNumber;
+	private boolean end = false;
 	
 	private ArrayList<String> fichiers = MainLauncher.fichiersBioinfo;
 
 	//Creer un un etat a partir d'une sauvegarde
-	public StateController(int fichier, int ligne) 
+	public StateController(String name, int ligne) 
 	{
-		this.setFileNumber(fichier);
 		this.setLineNumber(ligne);
 		this.setRefSeqNumber(0);
 	}
 	
 	//Creer un nouveau state
-	public StateController() 
+	public StateController(String name) 
 	{
-		this.setFileNumber(0);
+		this.setFileName(name);
 		this.setLineNumber(1);
 		this.setRefSeqNumber(0);
 	}
 	
 	//On verifie si un etat a ete sauvegarde (fichier etat.txt)
-	public static StateController checkState()
+	public static StateController checkState(String file)
 	{
-		File sauvegarde = new File("state.txt");
+		File sauvegarde = new File("/Data/state_"+file);
+		//System.out.println("Test file StateController : " + sauvegarde.getName() + " test exists : " + sauvegarde.exists());
 		StateController etat;
 		
 		if(sauvegarde.exists())
 		{
-			etat=FileController.retrieveState();
+			etat=FileController.retrieveState(file);
 		}		
 		else
 		{
-			etat = new StateController();
+			etat = new StateController(file);
 		}		
 	
 		return etat;
-	}
-	
-	public void increFile() 
-	{
-		this.setFileNumber(this.getFileNumber()+1);
-		this.setLineNumber(1);
-		this.setRefSeqNumber(0);
 	}
 	
 	public void increLine() 
@@ -78,7 +72,7 @@ public class StateController
 	//Le traitement est termine si on a recupere tous les genomes des fichiers
 	public boolean traitementTermine() 
 	{
-		return this.getFileNumber() == fichiers.size();
+		return isEnd();
 	}
 	
 	//On verifie si, pour un genome, on a recupere toutes les sequences associees 
@@ -90,15 +84,15 @@ public class StateController
 	// Recuperer le nom de fichier
 	public String getNomFichier() 
 	{
-		return this.fichiers.get(fileNumber);
+		return this.fileName;
 	}
 	
-	public int getFileNumber() {
-		return fileNumber;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setFileNumber(int fileNumber) {
-		this.fileNumber = fileNumber;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	public int getLineNumber() {
@@ -127,6 +121,14 @@ public class StateController
 
 	public String toString() 
 	{
-		return fileNumber + ":" + this.getNomFichier() + "; Numero Ligne : " + this.getLineNumber() + "; Numero Nucleotide : " + this.getRefSeqNumber(); 
+		return fileName + ":" + this.getNomFichier() + "; Numero Ligne : " + this.getLineNumber() + "; Numero Nucleotide : " + this.getRefSeqNumber(); 
+	}
+
+	public boolean isEnd() {
+		return end;
+	}
+
+	public void setEnd(boolean end) {
+		this.end = end;
 	}
 }
