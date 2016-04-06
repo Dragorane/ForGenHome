@@ -183,8 +183,8 @@ public class GenomeCounter extends Thread
 	// Demarre le traitement
 		private void demarrerTraitement(String file)
 		{
-			boolean optionInfo = this.ihm_log.cds.isSelected();
-			boolean optionSequence = this.ihm_log.sequence.isSelected();
+			boolean optionInfo = this.ihm_log.check_cds.isSelected();
+			boolean optionSequence = this.ihm_log.check_sequence.isSelected();
 			
 			StateController etat = StateController.checkState(file);
 			
@@ -296,7 +296,7 @@ public class GenomeCounter extends Thread
 					ex.printStackTrace();
 				}
 			}
-			ihm_log.addLog("**** Recuperation terminee ****");
+			ihm_log.addLog("**** Recuperation terminee de " + file+  "****");
 			
 		}
 	

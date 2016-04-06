@@ -25,7 +25,7 @@ public class MainLauncher
 	   			
 		UIManager.setLookAndFeel(new MetalLookAndFeel());
 		
-		Interface bio = new Interface("Projet BioInformatique 2016");
+		Interface bio = new Interface("Projet BioInformatique 2016 --- ForGenHome");
 		DownloadTool.setIHM(bio);
 		
 		bio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
