@@ -77,7 +77,11 @@ public class Interface extends JFrame
 			log_area.setText(message);
 		}
 		else{
-			log_area.setText(log_area.getText()+"\n"+message);
+			if(log_area.getText().length() > 100000) {
+				log_area.setText(message);
+			} else {
+				log_area.setText(log_area.getText()+"\n"+message);
+			}
 		}
 		
 	}

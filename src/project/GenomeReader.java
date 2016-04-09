@@ -199,10 +199,10 @@ public class GenomeReader
 			genome.setUpdateDate(tabLigne[15]);
 			if(!tabLigne[14].equals("Contig") && !tabLigne[14].equals("Scaffold") && !isUptoDate(genome))
 			{
-				recupererGCF(genome);
+				recupererGCF(genome, 1);
 				if(genome.getGcf()!=null)
 				{
-					recupererRefSeqEuka(genome);
+					recupererRefSeqEuka(genome, 1);
 				}
 			}
 			else
@@ -220,7 +220,7 @@ public class GenomeReader
 			genome.setUpdateDate(tabLigne[11]);
 			if(!isUptoDate(genome))
 			{
-				recupererRefSeqVir(genome);
+				recupererRefSeqVir(genome, 1);
 				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
 				ihm_log.progress_bar.setString(ihm_log.progress_bar.getValue()+ " / "+ihm_log.progress_bar.getMaximum());
 
@@ -354,12 +354,12 @@ public class GenomeReader
 	 */
 
 	//Parsing bioproject's page to get the gcf (eukariotes)
-	private void recupererGCF(Genome genome)
+	private void recupererGCF(Genome genome, int nbRelance)
 	{
 		try
 		{
 			if(genome!=null && genome.getBioproject()!=null) {
-				Connection co = Jsoup.connect(LINK_BIOPROJECT + genome.getBioproject()).timeout(1000000);
+				Connection co = Jsoup.connect(LINK_BIOPROJECT + genome.getBioproject()).timeout(300000);
 				Document doc = co.get();
 				Elements elements = doc.getElementsByAttributeValue("title","Genome assembly info");
 				Element content = elements.first();
@@ -377,9 +377,12 @@ public class GenomeReader
 			e.printStackTrace();
 			try {
         		ihm_log.addLog("Erreur de connexion");
-        		ihm_log.addLog("Tentative de relance dans 5 secondes");
-				Thread.sleep(5000);
-				recupererGCF(genome);
+        		if(nbRelance <= 3) {
+        			ihm_log.addLog("Tentative de relance dans 5 secondes, relance n°" + nbRelance);
+        			Thread.sleep(5000);
+        			nbRelance+=1;
+					recupererGCF(genome, 1);
+        		}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
@@ -387,12 +390,12 @@ public class GenomeReader
 	}
 
 	//Parsing assembly's page to get refseqs
-	private void recupererRefSeqEuka(Genome genome)
+	private void recupererRefSeqEuka(Genome genome, int nbRelance)
 	{
 		try
 		{
 			if(genome!=null && genome.getGcf()!=null) {
-				Connection co = Jsoup.connect(LINK_ASSEMBLY + genome.getGcf()).timeout(1000000);
+				Connection co = Jsoup.connect(LINK_ASSEMBLY + genome.getGcf()).timeout(300000);
 				Document doc = co.get();
 	
 				Element asm = doc.getElementById("asm_Primary_Assembly");
@@ -456,9 +459,12 @@ public class GenomeReader
 			ex.printStackTrace();
 			try {
         		ihm_log.addLog("Erreur de connexion");
-        		ihm_log.addLog("Tentative de relance dans 5 secondes");
-				Thread.sleep(5000);
-				recupererRefSeqEuka(genome);
+        		if(nbRelance <= 3) {
+        			ihm_log.addLog("Tentative de relance dans 5 secondes, relance n°" + nbRelance);
+        			Thread.sleep(5000);
+        			nbRelance+=1;
+        			recupererRefSeqEuka(genome, nbRelance);
+        		}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
@@ -466,13 +472,13 @@ public class GenomeReader
 	}
 
 	//Parsing bioproject's page of viruses to get refseqs
-	 private void recupererRefSeqVir(Genome genome)
+	 private void recupererRefSeqVir(Genome genome, int nbRelance)
      {
          System.out.println(genome.getBioproject());
          try
          {
         	 if(genome!=null && genome.getBioproject()!=null) {
-	             Document doc = Jsoup.connect("http://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject()).timeout(1000000).get();
+	             Document doc = Jsoup.connect("http://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject()).timeout(300000).get();
 	             Elements elements = doc.getElementsByTag("a");
 	             if(elements!=null)
 	             {
@@ -491,7 +497,7 @@ public class GenomeReader
 	                   {
 	                	   try {
 		                       System.out.println(linkHref);
-		                       Document doc2 = Jsoup.connect("http://www.ncbi.nlm.nih.gov" + linkHref).timeout(1000000).get();
+		                       Document doc2 = Jsoup.connect("http://www.ncbi.nlm.nih.gov" + linkHref).timeout(300000).get();
 		
 		                       // If we only need to download one file
 		                       if(e.text().equals("1"))
@@ -553,9 +559,12 @@ public class GenomeReader
         	 ex.printStackTrace();
         	 try {
          		ihm_log.addLog("Erreur de connexion");
-         		ihm_log.addLog("Tentative de relance dans 5 secondes");
- 				Thread.sleep(5000);
- 				recupererRefSeqEuka(genome);
+         		if(nbRelance <= 3) {
+         			ihm_log.addLog("Tentative de relance dans 5 secondes, relance n°" + nbRelance);
+        			Thread.sleep(5000);
+        			nbRelance+=1;
+        			recupererRefSeqEuka(genome, nbRelance);
+         		} 				
  			} catch (InterruptedException e1) {
  				e1.printStackTrace();
  			}
