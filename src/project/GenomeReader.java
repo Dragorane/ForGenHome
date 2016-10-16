@@ -28,12 +28,12 @@ import utils.DownloadTool;
 public class GenomeReader
 {
 	// Liste des sites ncbi
-	public static String LINK_SITE = "http://www.ncbi.nlm.nih.gov";
+	public static String LINK_SITE = "https://www.ncbi.nlm.nih.gov";
 
 	public static String LINK_BIOPROJECT = LINK_SITE + "/bioproject/";
 	public static String LINK_ASSEMBLY = LINK_SITE + "/assembly/";
 
-	public static String LINK_SEQUENCE = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=";
+	public static String LINK_SEQUENCE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=";
 
 	public static String LINK_LIST_PROK = LINK_SITE + "/genomes/Genome2BE/genome2srv.cgi?action=download&orgn=&report=proks&status=50|40|30|20|&group=--%20All%20Prokaryotes%20--&subgroup=--%20All%20Prokaryotes%20--";
 	public static String LINK_LIST_EUKA = LINK_SITE + "/genomes/Genome2BE/genome2srv.cgi?action=download&orgn=&report=euks&status=50|40|30|20|&group=--%20All%20Eukaryota%20--&subgroup=--%20All%20Eukaryota%20--";
@@ -378,7 +378,7 @@ public class GenomeReader
 			try {
         		ihm_log.addLog("Erreur de connexion");
         		if(nbRelance <= 3) {
-        			ihm_log.addLog("Tentative de relance dans 5 secondes, relance n°" + nbRelance);
+        			ihm_log.addLog("Tentative de relance dans 5 secondes, relance nï¿½" + nbRelance);
         			Thread.sleep(5000);
         			nbRelance+=1;
 					recupererGCF(genome, 1);
@@ -460,7 +460,7 @@ public class GenomeReader
 			try {
         		ihm_log.addLog("Erreur de connexion");
         		if(nbRelance <= 3) {
-        			ihm_log.addLog("Tentative de relance dans 5 secondes, relance n°" + nbRelance);
+        			ihm_log.addLog("Tentative de relance dans 5 secondes, relance nï¿½" + nbRelance);
         			Thread.sleep(5000);
         			nbRelance+=1;
         			recupererRefSeqEuka(genome, nbRelance);
@@ -560,7 +560,7 @@ public class GenomeReader
         	 try {
          		ihm_log.addLog("Erreur de connexion");
          		if(nbRelance <= 3) {
-         			ihm_log.addLog("Tentative de relance dans 5 secondes, relance n°" + nbRelance);
+         			ihm_log.addLog("Tentative de relance dans 5 secondes, relance nï¿½" + nbRelance);
         			Thread.sleep(5000);
         			nbRelance+=1;
         			recupererRefSeqEuka(genome, nbRelance);
