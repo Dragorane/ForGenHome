@@ -3,6 +3,10 @@ bin/
 out/
 RemoteSystemsTempFiles/
 .metadata/
+result/
+Eukaryotes/
+Prokaryotes/
+Viruses/
 
 #global
 *.class
