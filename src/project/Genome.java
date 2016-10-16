@@ -13,7 +13,7 @@ import lombok.Setter;
 
 public class Genome 
 {
-    private final String mainDir = "result";
+    private final String mainDir = "Results";
 	@Getter private String kingdom;
 	@Getter private String group;
 	@Getter private String subgroup;	

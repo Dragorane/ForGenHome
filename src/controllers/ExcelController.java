@@ -1,19 +1,21 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.apache.xmlbeans.*;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /*
  * Class ExcelManager
@@ -23,10 +25,10 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class ExcelController 
 {
 	String name;
-	Workbook wb;
-	Sheet sheet;
-	Row line;
-	Cell cell;
+    XSSFWorkbook wb;
+    XSSFSheet sheet;
+    XSSFRow line;
+    XSSFCell cell;
 	
 	char[] nucleotides = { 'A', 'C', 'G', 'T' };
 	
@@ -37,7 +39,9 @@ public class ExcelController
 		
 		try {
 			excel.name = name;
-			excel.wb = WorkbookFactory.create(new File(name));
+            FileInputStream fis = new FileInputStream(new File(name));
+            excel.wb = new XSSFWorkbook(fis);
+
 			excel.sheet = excel.wb.getSheet("Resultat");
 	
 			return excel;
@@ -55,7 +59,8 @@ public class ExcelController
 		
 		try {
 			//System.out.println("Test nom newExcel : " + nom);
-			res.wb = WorkbookFactory.create(new File("base.xls"));
+            FileInputStream fis = new FileInputStream(new File("base.xlsx"));
+            res.wb = new XSSFWorkbook(fis);
 			res.sheet = res.wb.getSheet("Resultat");
 			res.name = nom;
 			res.saving();
@@ -210,7 +215,7 @@ public class ExcelController
                                         //if(line.getCell(g) == null)
                                                 //cell = line.createCell(g);
                                         //line.getCell(g, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                                        cell = line.getCell(g,Row.CREATE_NULL_AS_BLANK);
+                                        cell = line.getCell(g,XSSFRow.CREATE_NULL_AS_BLANK);
                                         if(cell.toString() == "")
                                                 cell.setCellValue("0");
                                         valeur2 = new BigDecimal(cell.toString());

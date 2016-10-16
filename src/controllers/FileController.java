@@ -220,22 +220,22 @@ public class FileController
 		
 		if(type.equals("chrom"))
 		{
-			nomFichier = nomDossier + "/chromosomes.xls";
+			nomFichier = nomDossier + "/chromosomes.xlsx";
 			nbSeq = genome.getNbSeqChrom();
 		}
 		else if(type.equals("plasm"))
 		{
-			nomFichier = nomDossier + "/plasmides.xls";
+			nomFichier = nomDossier + "/plasmides.xlsx";
 			nbSeq = genome.getNbSeqPlasm();
 		}
 		else if(type.equals("chloro"))
 		{
-			nomFichier = nomDossier + "/chloroplastes.xls";
+			nomFichier = nomDossier + "/chloroplastes.xlsx";
 			nbSeq = genome.getNbSeqChloro();
 		}
 		else if(type.equals("mito"))
 		{
-			nomFichier = nomDossier + "/mitochondries.xls";
+			nomFichier = nomDossier + "/mitochondries.xlsx";
 			nbSeq = genome.getNbSeqMito();
 		}
 		
