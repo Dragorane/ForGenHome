@@ -13,6 +13,7 @@ import lombok.Setter;
 
 public class Genome 
 {
+    private final String mainDir = "result";
 	@Getter private String kingdom;
 	@Getter private String group;
 	@Getter private String subgroup;	
@@ -38,17 +39,21 @@ public class Genome
 		this.nbSeqChrom=0;
 		this.nbSeqChloro=0;
 		this.nbSeqMito=0;
-		this.nbSeqPlasm=0;		
-	}
-	
+		this.nbSeqPlasm=0;
+    }
+
+    public String getKingdomChemin() {
+        return this.mainDir + "/" + this.kingdom;
+    }
+
 	public String getGroupChemin() 
 	{
-		return this.kingdom + "/" + this.getGroup();
+		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup();
 	}
 	
 	public String getSubGroupChemin() 
 	{
-		return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup();
+		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup();
 	}
 	
 	public String getChemin() 
@@ -56,7 +61,7 @@ public class Genome
 		//if(Interface.jcb_fin.isSelected())
 			//return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.getName()+"[" + this.getBioproject() +"]";
 		//else
-			return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.getName();
+			return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.getName();
 
 	}
 	
@@ -182,7 +187,7 @@ public class Genome
 		{
 			numRefSeq.add(ref[0]);
 		}
-		return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.name + numRefSeq ;
+		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.name + numRefSeq ;
 	}
 	
 }

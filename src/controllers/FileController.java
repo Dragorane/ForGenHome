@@ -171,12 +171,12 @@ public class FileController
 		StateController res = null;
 
 		File etat = new File("state_"+file);
-		//System.out.println("Test File etat : " + etat.getName());
+		System.out.println("Test File etat : " + etat.getName());
 		
 		if (etat.exists()) 
 		{
-			//System.out.println("Une sauvegarde a ete trouve !");
-			//System.out.println("Recuperation du fichier state.txt");
+			System.out.println("Une sauvegarde a ete trouve !");
+			System.out.println("Recuperation du fichier state.txt");
 
 			Scanner sc = null;
 			try 
@@ -205,7 +205,7 @@ public class FileController
 		createUpdateFile(genome.getChemin()+"\\updateDate.txt", genome);
 		writingExcel(genome.getSubGroupChemin(), genome, type, resultats);
 		writingExcel(genome.getGroupChemin(), genome, type, resultats);
-		writingExcel(genome.getKingdom(), genome, type, resultats);
+		writingExcel(genome.getKingdomChemin(), genome, type, resultats);
 	}
 
 	// Writing in the excel file
@@ -248,7 +248,7 @@ public class FileController
 		{
 			bewFile(nomDossier);
 		}
-		
+
 		//System.out.println("Debug fichier exists : " + fichier.exists());
 		
 		if (fichier.exists()) 
@@ -260,7 +260,7 @@ public class FileController
 			excel = ExcelController.newExcel(nomFichier);
 			//System.out.println("Debug excel : " + excel.toString());
 		}
-	
+
 		//System.out.println("Debug resultats : " + resultats.toString());
 		//System.out.println("Debug excel name : " + excel.name);
 		
@@ -293,7 +293,7 @@ public class FileController
 
 	public static void createUpdateFile2(String string, Genome genome) {
 		Path p = Paths.get(string);
-		System.out.println("Test createUpdateFile2 : " + p.toString());
+		//System.out.println("Test createUpdateFile2 : " + p.toString());
 		if(java.nio.file.Files.exists(p))
 		{
 			try {
