@@ -7,6 +7,13 @@ result/
 Eukaryotes/
 Prokaryotes/
 Viruses/
+state_viruses.txt
+state_prokaryotes.txt
+state_eukaryotes.txt
+viruses.txt
+prokaryotes.txt
+eukaryotes.txt
+temp
 
 #global
 *.class
