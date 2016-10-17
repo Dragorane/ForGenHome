@@ -5,7 +5,18 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jsoup-1.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/lombok.jar"/>
-	<classpathentry kind="lib" path="lib/poi-3.11-20141221.jar"/>
-	<classpathentry kind="lib" path="lib/poi-ooxml-3.11-20141221.jar"/>
+	<classpathentry kind="lib" path="/ForGenHome/lib/poi-3.11-20141221.jar"/>
+	<classpathentry kind="lib" path="/ForGenHome/lib/poi-ooxml-3.11-20141221.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/curvesapi-1.04"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/xmlbeans-2.6.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi-3.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi-examples-3.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi-excelant-3.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi-ooxml-3.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi-ooxml-schemas-3.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi-scratchpad-3.15"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lombok"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-codec-1.10"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
