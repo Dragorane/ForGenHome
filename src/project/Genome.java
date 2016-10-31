@@ -30,10 +30,10 @@ public class Genome
 	
 	public Genome(String kingdom, String group, String subgroup, String name, String bioproject) 
 	{
-		this.kingdom=kingdom;
-		this.group=group;
-		this.subgroup=subgroup;
-		this.name=name;
+		this.kingdom=kingdom.replaceAll(" ", "_");
+		this.group=group.replaceAll(" ", "_");
+		this.subgroup=subgroup.replaceAll(" ", "_");
+		this.name=name.replaceAll(" ", "_");
 		this.bioproject=bioproject;
 		this.refseq = new ArrayList<String[]>();
 		this.nbSeqChrom=0;
@@ -82,7 +82,9 @@ public class Genome
 			return false;
 		}
 	}
-	
+
+	public String getMainDir(){return mainDir;}
+
 	public String getGroup() {
 		return group;
 	}

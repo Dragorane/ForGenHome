@@ -200,49 +200,61 @@ public class FileController
 	}
 
 	public static void savingResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats) throws  IOException, InvalidFormatException
-	{			
-		writingExcel(genome.getChemin(), genome, type, resultats);
+	{
+		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "organisme");
 		createUpdateFile(genome.getChemin()+"\\updateDate.txt", genome);
-		writingExcel(genome.getSubGroupChemin(), genome, type, resultats);
-		writingExcel(genome.getGroupChemin(), genome, type, resultats);
-		writingExcel(genome.getKingdomChemin(), genome, type, resultats);
+		writingExcel(genome.getGroupChemin(), genome, type, resultats,"subGroup");
+		writingExcel(genome.getKingdomChemin(), genome, type, resultats,"group");
+		writingExcel(genome.getMainDir(), genome, type, resultats,"kingdom");
 	}
 
 	// Writing in the excel file
-	public static void writingExcel(String nomDossier,Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats) throws  IOException, InvalidFormatException 
+	public static void writingExcel(String nomDossier,Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats, String location) throws  IOException, InvalidFormatException
 	{
-		String nomFichier = "";
+		String fileName = "";
+		String sheetName="";
 		long nbSeq = 0;
-		
-		//System.out.println("Debug type : " + type);
-		//System.out.println("Debug nomDossier : " + nomDossier);
-		//System.out.println("Debug genome : " + genome.toString());
+		if(location.equals("subGroup")) {
+			fileName = nomDossier + "/Total_" + genome.getSubgroup() + ".xlsx";
+		}
+		else if(location.equals("group")) {
+		    fileName = nomDossier + "/Total_" + genome.getGroup() + ".xlsx";
+	    }
+		else if(location.equals("kingdom")) {
+			fileName = nomDossier + "/Total_" + genome.getKingdom() + ".xlsx";
+		}
+		else if(location.equals("organisme")) {
+			fileName = nomDossier + "/" + genome.getName() + ".xlsx";
+		}
+		System.out.println("Debug type : " + type);
+		System.out.println("Debug nomDossier : " + nomDossier);
+		System.out.println("Debug genome : " + genome.toString());
 		
 		if(type.equals("chrom"))
 		{
-			nomFichier = nomDossier + "/chromosomes.xlsx";
+			sheetName = "Sum_Chromosome";
 			nbSeq = genome.getNbSeqChrom();
 		}
 		else if(type.equals("plasm"))
 		{
-			nomFichier = nomDossier + "/plasmides.xlsx";
+			sheetName = "Sum_Plasmids";
 			nbSeq = genome.getNbSeqPlasm();
 		}
 		else if(type.equals("chloro"))
 		{
-			nomFichier = nomDossier + "/chloroplastes.xlsx";
+			sheetName = "Sum_Chloroplast";
 			nbSeq = genome.getNbSeqChloro();
 		}
 		else if(type.equals("mito"))
 		{
-			nomFichier = nomDossier + "/mitochondries.xlsx";
+			sheetName = "Sum_Mitochondrion";
 			nbSeq = genome.getNbSeqMito();
 		}
 		
 		ExcelController excel;
 
-		File fichier = new File(nomFichier);
-		File dossier = new File(nomDossier);
+		File fichier = new File(fileName);
+		File dossier = new File(fileName);
 
 		if (!dossier.exists()) 
 		{
@@ -253,11 +265,11 @@ public class FileController
 		
 		if (fichier.exists()) 
 		{
-			excel = ExcelController.openingExistingFile(nomFichier);
+			excel = ExcelController.openingExistingFile(fileName,sheetName);
 		} 
 		else 
 		{
-			excel = ExcelController.newExcel(nomFichier);
+			excel = ExcelController.newExcel(fileName,sheetName);
 			//System.out.println("Debug excel : " + excel.toString());
 		}
 
