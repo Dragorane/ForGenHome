@@ -91,6 +91,20 @@ public class ExcelController
 		return res;
 	}*/
 
+	// generate new sheet for an existing xlsx with an existing sheet.
+	// @sheetName : name of the new sheet.
+	// @return : void
+	public boolean addNewSheet(String sheetName){
+		try{
+			XSSFSheet newSheet = wb.cloneSheet(0,sheetName);
+			return true;
+	    }
+	    catch(Exception e) {
+	        System.out.println("Debug clonesheet : " + e.getMessage() + " error : " + e.toString());
+	        return false;
+        }
+	}
+
 	//Writing results in the excel file
 	public void writingResults(ArrayList<HashMap<String, BigInteger>> results)
 	{
