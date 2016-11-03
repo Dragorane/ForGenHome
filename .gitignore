@@ -3,7 +3,7 @@ bin/
 out/
 RemoteSystemsTempFiles/
 .metadata/
-result/
+Results/
 Eukaryotes/
 Prokaryotes/
 Viruses/
