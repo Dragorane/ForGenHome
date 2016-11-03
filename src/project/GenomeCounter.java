@@ -105,6 +105,7 @@ public class GenomeCounter extends Thread
 			{
 				genome.setNbSeqMito(genome.getNbSeqMito()+1);
 			}
+
 			
 			int ph = 0;
 		
@@ -198,6 +199,8 @@ public class GenomeCounter extends Thread
 			ArrayList<HashMap<String, BigInteger>> resultatsChloro = new ArrayList<HashMap<String, BigInteger>>();
 			ArrayList<HashMap<String, BigInteger>> resultatsPlasm = new ArrayList<HashMap<String, BigInteger>>();
 			ArrayList<HashMap<String, BigInteger>> resultatsMito = new ArrayList<HashMap<String, BigInteger>>();
+			// Minipera
+			ArrayList<HashMap<String, BigInteger>> resultatsTemp = new ArrayList<HashMap<String, BigInteger>>();
 
 
 			getGenome.getFiles(ihm_log, file);
@@ -212,6 +215,7 @@ public class GenomeCounter extends Thread
 					resultatsPlasm = null;
 					resultatsMito = null;
 					sequence_info = null;
+					resultatsTemp = null;
 
 					// On recupere un des genomes deja telecharger
 					genome = getGenome.get(etat);
@@ -230,15 +234,18 @@ public class GenomeCounter extends Thread
 						ihm_log.addLog("Contenu dans " + etat.getNomFichier() + " [ " + (etat.getLineNumber()+1) + " ]");
 						while (!etat.toutRecuperer(genome.getRefseq().size()))
 						{
+							//Minipera on remet à zéro
+							resultatsTemp = null;
+
 							// On recupere la refseq et son type
 							String[] ref_type = genome.getRefseq().get(etat.getRefSeqNumber());
-							String refseq=ref_type[0];
+							String refseq = ref_type[0];
 							String type=ref_type[1];						
-							
+							System.out.println("Minipera : " + refseq);
 							// On recupere la sequence et les infos (genes) associes 
 							sequence_info = getGenome.getSequence(genome, refseq, optionSequence);
-							
-							// On sauvegarder les infos (option)
+
+							// On sauvegarde les infos (option)
 							if (optionInfo)
 							{
 								FileController.sauvegarderInfos(genome, sequence_info.get(1));
@@ -263,6 +270,24 @@ public class GenomeCounter extends Thread
 								{
 									resultatsMito = ajoutResultats(genome, sequence, type, resultatsMito);	
 								}
+								//minipera
+								try {
+									resultatsTemp = ajoutResultats(genome, sequence, type, resultatsTemp);
+								}
+								catch (Exception e)
+								{
+									System.out.println("ERREUR lors de l'ajout resultat séquence " + refseq + " " + e);
+								}
+
+
+								try {
+									FileController.savingResults(genome, type, resultatsTemp, type + "_" + refseq);
+							}
+								catch (Exception e)
+							{
+								System.out.println("ERREUR lors de sauvegarde resultat séquence " + refseq + " " + e);
+							}
+
 							}
 							
 							etat.increRefseq();;
@@ -273,19 +298,19 @@ public class GenomeCounter extends Thread
 						// Selon le type, on enregistre les resultats 
 						if(resultatsChrom!=null)
 						{
-							FileController.savingResults(genome, "chrom", resultatsChrom);
+							FileController.savingResults(genome, "chrom", resultatsChrom, null);
 						}
 						if(resultatsChloro!=null)
 						{
-							FileController.savingResults(genome, "chloro", resultatsChloro);
+							FileController.savingResults(genome, "chloro", resultatsChloro, null);
 						}
 						if(resultatsPlasm!=null)
 						{
-							FileController.savingResults(genome, "plasm", resultatsPlasm);
+							FileController.savingResults(genome, "plasm", resultatsPlasm, null);
 						}
 						if(resultatsMito!=null)
 						{
-							FileController.savingResults(genome, "mito", resultatsMito);
+							FileController.savingResults(genome, "mito", resultatsMito, null);
 						}
 					}
 					etat.increLine();

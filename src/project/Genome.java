@@ -27,6 +27,7 @@ public class Genome
 	@Getter @Setter private long nbSeqChloro;
 	@Getter @Setter private long nbSeqMito;
 	@Getter @Setter private long nbSeqPlasm;
+	@Getter @Setter private long nbSeqTemp;
 	
 	public Genome(String kingdom, String group, String subgroup, String name, String bioproject) 
 	{
@@ -179,6 +180,14 @@ public class Genome
 
 	public void setNbSeqPlasm(long nbSeqPlasm) {
 		this.nbSeqPlasm = nbSeqPlasm;
+	}
+
+	public long getNbSeqTemp() {
+		return nbSeqTemp;
+	}
+
+	public void setNbSeqTemp(long nbSeqTemp) {
+		this.nbSeqTemp = nbSeqTemp;
 	}
 
 	@Override

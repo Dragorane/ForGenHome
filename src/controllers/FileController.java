@@ -199,20 +199,30 @@ public class FileController
 		return res;
 	}
 
-	public static void savingResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats) throws  IOException, InvalidFormatException
+	public static void savingResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats, String sheet) throws  IOException, InvalidFormatException
 	{
-		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "organisme");
+		if (sheet == null){
+		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "organisme", null);
 		createUpdateFile(genome.getChemin()+"\\updateDate.txt", genome);
-		writingExcel(genome.getGroupChemin(), genome, type, resultats,"subGroup");
-		writingExcel(genome.getKingdomChemin(), genome, type, resultats,"group");
-		writingExcel(genome.getMainDir(), genome, type, resultats,"kingdom");
+		writingExcel(genome.getGroupChemin(), genome, type, resultats,"subGroup", null);
+		writingExcel(genome.getKingdomChemin(), genome, type, resultats,"group", null);
+		writingExcel(genome.getMainDir(), genome, type, resultats,"kingdom", null);}
+		else {
+
+			try {
+				writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "organisme", sheet);
+			} catch (Exception e) {
+				System.out.println("ERREUR lors du writingExcel de la séquence : " + sheet + " : " + e);
+			}
+		}
 	}
 
 	// Writing in the excel file
-	public static void writingExcel(String nomDossier,Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats, String location) throws  IOException, InvalidFormatException
+	public static void writingExcel(String nomDossier,Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats, String location, String sheet) throws  IOException, InvalidFormatException
 	{
 		String fileName = "";
 		String sheetName="";
+		String tempSheetName="";
 		long nbSeq = 0;
 		if(location.equals("subGroup")) {
 			fileName = nomDossier + "/Total_" + genome.getSubgroup() + ".xlsx";
@@ -229,29 +239,39 @@ public class FileController
 		System.out.println("Debug type : " + type);
 		System.out.println("Debug nomDossier : " + nomDossier);
 		System.out.println("Debug genome : " + genome.toString());
+
+		/*
+		for(String[] ref : genome.getRefseq())
+		{
+			System.out.println("Minipera : " + ref[0].toString());
+		}
+		*/
+
+		//tempSheetName = genome.getRefseq();
+
+		if (sheet == null) {
+			if (type.equals("chrom")) {
+				sheetName = "Sum_Chromosome";
+				nbSeq = genome.getNbSeqChrom();
+			} else if (type.equals("plasm")) {
+				sheetName = "Sum_Plasmids";
+				nbSeq = genome.getNbSeqPlasm();
+			} else if (type.equals("chloro")) {
+				sheetName = "Sum_Chloroplast";
+				nbSeq = genome.getNbSeqChloro();
+			} else if (type.equals("mito")) {
+				sheetName = "Sum_Mitochondrion";
+				nbSeq = genome.getNbSeqMito();
+			}
+		}else
+
+		//minipera
+		{
+			sheetName = sheet;
+			nbSeq = genome.getNbSeqTemp();
+		}
 		
-		if(type.equals("chrom"))
-		{
-			sheetName = "Sum_Chromosome";
-			nbSeq = genome.getNbSeqChrom();
-		}
-		else if(type.equals("plasm"))
-		{
-			sheetName = "Sum_Plasmids";
-			nbSeq = genome.getNbSeqPlasm();
-		}
-		else if(type.equals("chloro"))
-		{
-			sheetName = "Sum_Chloroplast";
-			nbSeq = genome.getNbSeqChloro();
-		}
-		else if(type.equals("mito"))
-		{
-			sheetName = "Sum_Mitochondrion";
-			nbSeq = genome.getNbSeqMito();
-		}
-		
-		ExcelController excel;
+		ExcelController excel = null;
 
 		File fichier = new File(fileName);
 		File dossier = new File(fileName);
@@ -265,22 +285,56 @@ public class FileController
 		
 		if (fichier.exists()) 
 		{
-			excel = ExcelController.openingExistingFile(fileName,sheetName);
+			System.out.println("Debug : ouverture du fichier excel : " + fileName);
+			try {
+				excel = ExcelController.openingExistingFile(fileName, sheetName);
+			}
+			catch(Exception e)
+			{
+	System.out.println("ERREUR ouverture fichier " + fileName + " : " + sheetName);
+			}
 		} 
 		else 
 		{
+			System.out.println("Debug : création du fichier excel : " + fileName);
+			//Minipera
+		try {
 			excel = ExcelController.newExcel(fileName,sheetName);
-			//System.out.println("Debug excel : " + excel.toString());
+			if (sheet != null){
+			System.out.println("Debug : création nouvel ongel : " + sheetName);
+			excel.addNewSheet(sheetName);}
+		}
+		catch (Exception e)
+		{
+			System.out.println("Debug : création nouvel onglet ERREUR : " + fileName + sheetName + e);
+		}
+			//System.out.println("Debug excel : " + excel.toString();
 		}
 
 		//System.out.println("Debug resultats : " + resultats.toString());
 		//System.out.println("Debug excel name : " + excel.name);
-		
-		excel.writingResults(resultats);
-		
-		excel.addingNbSeq(nbSeq);
+		try {
+			excel.writingResults(resultats);
+		}catch (Exception e)
+		{
+			System.out.println("Debug : ERREUR writing result " + fileName + sheetName + e);
 
+		}
+
+		try {
+			excel.addingNbSeq(nbSeq);
+		}
+		catch (Exception e){
+			System.out.println("Debug ERREUR : addingNbSeq " + fileName + sheetName + e);
+
+		}
+try {
 		excel.saving();
+	}catch (Exception e)
+		{
+			System.out.println("Debug : ERREUR : saving" + fileName + sheetName + e);
+
+		}
 	}
 	
 	public static void createUpdateFile(String path, Genome genome)
