@@ -82,6 +82,18 @@ public class Genome {
 
 	}
 
+	//genki
+	public String getCheminSansMainDir() {
+		// if(Interface.jcb_fin.isSelected())
+		// return this.kingdom + "/" + this.getGroup() + "/" +
+		// this.getSubgroup() + "/" + this.getName()+"[" + this.getBioproject()
+		// +"]";
+		// else
+		return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/"
+				+ this.getName();
+
+	}
+
 	public String getMainDir() {
 		return mainDir;
 	}
@@ -204,5 +216,9 @@ public class Genome {
 		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.name
 				+ numRefSeq;
 	}
+
+
+	//genki
+
 
 }

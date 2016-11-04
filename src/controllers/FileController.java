@@ -73,7 +73,7 @@ public class FileController {
 	// Saving sequences of a genome (in option)
 	public static void sauvegarderSequence(Genome genome, String refseq, String sequence) {
 		//genki
-		String dossier = genome.getChemin();
+		String dossier = "/Genome/" + genome.getCheminSansMainDir();
 		bewFile(dossier);
 
 		String fichier = dossier + refseq + ".txt";
@@ -97,7 +97,8 @@ public class FileController {
 
 	// Possibility of saving 'genes' used (option)
 	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) {
-		String dossier = genome.getChemin() + "/Gene";
+		//genki
+		String dossier = "/Gene" + genome.getCheminSansMainDir();
 		bewFile(dossier);
 
 		String fichier = dossier + "/infos.txt";
