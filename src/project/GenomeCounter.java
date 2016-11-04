@@ -258,6 +258,8 @@ public class GenomeCounter extends Thread {
 		ArrayList<HashMap<String, BigInteger>> resultatsChloro = new ArrayList<HashMap<String, BigInteger>>();
 		ArrayList<HashMap<String, BigInteger>> resultatsPlasm = new ArrayList<HashMap<String, BigInteger>>();
 		ArrayList<HashMap<String, BigInteger>> resultatsMito = new ArrayList<HashMap<String, BigInteger>>();
+		// Ajout du compteur pour la séquence actuelle
+		ArrayList<HashMap<String, BigInteger>> resultatsSequenceTemp = new ArrayList<HashMap<String, BigInteger>>();
 
 		getGenome.getFiles(ihm_log, file);
 
@@ -289,6 +291,7 @@ public class GenomeCounter extends Thread {
 						String[] ref_type = genome.getRefseq().get(etat.getRefSeqNumber());
 						String refseq = ref_type[0];
 						String type = ref_type[1];
+						
 
 						// On recupere la sequence et les infos (genes) associes
 						sequence_info = getGenome.getSequence(genome, refseq, optionSequence, file);
@@ -298,24 +301,35 @@ public class GenomeCounter extends Thread {
 							FileController.sauvegarderInfos(genome, sequence_info.get(1));
 						}
 
+						resultatsSequenceTemp = null;
+						String typeName = "";
 						// Pour les sequences recuperees, on ajoute les
 						// resultats en fonction du type
 						for (String sequence : sequence_info.get(0)) {
 							if (type.equals("chrom")) {
+								typeName = "Chromosome_";
 								resultatsChrom = ajoutResultats(genome, sequence, type, resultatsChrom);
 							} else if (type.equals("chloro")) {
+								typeName = "Chloroplast_";
 								resultatsChloro = ajoutResultats(genome, sequence, type, resultatsChloro);
 							} else if (type.equals("plasm")) {
+								typeName = "Plasmid_";
 								resultatsPlasm = ajoutResultats(genome, sequence, type, resultatsPlasm);
 							} else if (type.equals("mito")) {
+								typeName = "Mitochondrion_";
 								resultatsMito = ajoutResultats(genome, sequence, type, resultatsMito);
 							}
+							
+							// Calcul de la hashMap Resultat de la séquence en cours
+							resultatsSequenceTemp = ajoutResultats(genome, sequence, type, resultatsSequenceTemp);
 						}
-
+						
+						// Sauvegarder la HashMap de resultat d'un fichier du genome
+						FileController.savingOngletResults(genome, type, resultatsSequenceTemp, typeName + refseq);
+						resultatsSequenceTemp.clear();
+						
 						etat.increRefseq();
-						;
 						FileController.enregistrer(etat, file);
-
 					}
 
 					// Selon le type, on enregistre les resultats

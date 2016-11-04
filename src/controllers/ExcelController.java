@@ -31,8 +31,49 @@ public class ExcelController {
 
 	char[] nucleotides = { 'A', 'C', 'G', 'T' };
 
-	// Opening an existing excel file
-	public static ExcelController openingExistingFile(String name, String sheetName) throws IOException, InvalidFormatException {
+	// Opening an existing excel file without sheet
+	public static ExcelController openingExistingFile(String name) throws IOException, InvalidFormatException {
+		ExcelController excel = new ExcelController();
+		FileInputStream input = null;
+		try {
+			input = new FileInputStream(name);
+			OPCPackage opc = OPCPackage.open(input);
+			excel.wb = WorkbookFactory.create(opc);
+			excel.name = name;
+
+			return excel;
+		} catch (Exception e) {
+			System.out.println("Debug openingExistingFile ExcelController : " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	// Get a sheet
+	public void selectSheetFromExcel(String nameSheet) {		
+		try {
+			this.sheet = this.wb.getSheet(nameSheet);
+		} catch (Exception e) {
+			System.out.println("Debug getSheetFromExcel : " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	// Create a new sheet
+	public void createNewSheetInExcel(String nameSheet) {
+		try {
+			Sheet res = this.wb.cloneSheet(1);
+			this.wb.setSheetName(this.wb.getSheetIndex(res), nameSheet);
+			
+		} catch (Exception e) {
+			System.out.println("Debug createNewSheetInExcel : " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	// Opening an existing excel file with sheet specification
+	public static ExcelController openingExistingFile(String name, String sheetName)
+			throws IOException, InvalidFormatException {
 		ExcelController excel = new ExcelController();
 		FileInputStream input = null;
 		try {
@@ -70,6 +111,25 @@ public class ExcelController {
 			return null;
 		}
 	}
+	
+	// Creating a new excel file by using our starting file : base.xls
+		public static ExcelController newExcel(String name) throws IOException, InvalidFormatException {
+			ExcelController res = new ExcelController();
+
+			try {
+				// System.out.println("Test name newExcel : " + name);
+				res.wb = WorkbookFactory.create(new File("base.xlsx"));
+				res.name = name;
+				// res.saving();
+				res.saving();
+
+				return res;
+			} catch (Exception e) {
+				System.out.println("Debug newExcel : " + e.getMessage() + " error : " + e.toString());
+				e.printStackTrace();
+				return null;
+			}
+		}
 
 	// Generate all trinucleotides for the next step
 	/*

@@ -178,6 +178,12 @@ public class FileController {
 		writingExcel(genome.getKingdomChemin(), genome, type, resultats, "kingdom");
 	}
 
+	// Sauvegarder les résultats dans un onglet du fichier excel
+	public static void savingOngletResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats,
+			String sheetName) {
+		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "organisme", sheetName);
+	}
+
 	// Writing in the excel file
 	public static void writingExcel(String dirName, Genome genome, String type,
 			ArrayList<HashMap<String, BigInteger>> resultats, String location)
@@ -255,6 +261,75 @@ public class FileController {
 			excel.saving();
 		} catch (Exception e) {
 			System.out.println("Erreur writing Excel : " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	// Deuxième fonction pour ajouter les onglets spécifiques aux séquences
+	public static void writingExcel(String dirName, Genome genome, String type,
+			ArrayList<HashMap<String, BigInteger>> resultats, String location, String newSheetName) {
+		try {
+			String fileName = "";
+			long nbSeq = 0;
+
+			// System.out.println("Debug type : " + type);
+			// System.out.println("Debug nomDossier : " + nomDossier);
+			// System.out.println("Debug genome : " + genome.toString());
+
+			switch (location) {
+			case "subgroup":
+				fileName = dirName + "/Total_" + genome.getSubgroup() + ".xlsx";
+				break;
+			case "group":
+				fileName = dirName + "/Total_" + genome.getGroup() + ".xlsx";
+				break;
+			case "kingdom":
+				fileName = dirName + "/Total_" + genome.getKingdom() + ".xlsx";
+				break;
+			case "organisme":
+				fileName = dirName + "/Total_" + genome.getName() + ".xlsx";
+				break;
+			default:
+				System.out.println("Error location : " + location + " for Genome : " + genome.getName());
+			}
+
+			ExcelController excel;
+
+			File fichier = new File(fileName);
+			File dossier = new File(fileName);
+
+			if (!dossier.exists()) {
+				bewFile(dirName);
+			}
+
+			if (fichier.exists()) {
+				System.out.println("File exist !! : " + fileName);
+				excel = ExcelController.openingExistingFile(fileName);
+				excel.createNewSheetInExcel(newSheetName);
+				excel.selectSheetFromExcel(newSheetName);
+				System.out.println("Debug excel : " + excel.toString());
+			} else {
+				System.out.println("New Excel !! : " + fileName);
+				excel = ExcelController.newExcel(fileName);
+				excel.createNewSheetInExcel(newSheetName);
+				excel.selectSheetFromExcel(newSheetName);
+				System.out.println("Debug excel : " + excel.toString());
+			}
+
+			// System.out.println("Debug resultats : " + resultats.toString());
+			System.out.println("Debug excel name : " + excel.name);
+			System.out.println("Debug excel sheet name : " + excel.sheet.getSheetName());
+
+			if (resultats != null) {
+				excel.writingResults(resultats);
+				excel.writingResultDinucleotide(resultats);
+			}
+
+			excel.addingNbSeq(nbSeq);
+
+			excel.saving();
+		} catch (Exception e) {
+			System.out.println("");
 			e.printStackTrace();
 		}
 	}

@@ -14,6 +14,9 @@ viruses.txt
 prokaryotes.txt
 eukaryotes.txt
 temp
+temp_viruses
+temp_prokaryotes
+temp_eukaryotes
 
 #global
 *.class
