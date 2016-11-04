@@ -203,6 +203,7 @@ public class FileController {
 				break;
 			case "organisme":
 				fileName = dirName + "/Total_" + genome.getName() + ".xlsx";
+				break;
 			default:
 				System.out.println("Error location : " + location + " for Genome : " + genome.getName());
 			}
