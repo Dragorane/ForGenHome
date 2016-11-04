@@ -32,7 +32,7 @@ public class ExcelController {
 	char[] nucleotides = { 'A', 'C', 'G', 'T' };
 
 	// Opening an existing excel file
-	public static ExcelController openingExistingFile(String name) throws IOException, InvalidFormatException {
+	public static ExcelController openingExistingFile(String name, String sheetName) throws IOException, InvalidFormatException {
 		ExcelController excel = new ExcelController();
 		FileInputStream input = null;
 		try {
@@ -40,8 +40,8 @@ public class ExcelController {
 			OPCPackage opc = OPCPackage.open(input);
 			excel.wb = WorkbookFactory.create(opc);
 			excel.name = name;
-//			excel.wb = WorkbookFactory.create(new File(name));
-			excel.sheet = excel.wb.getSheet("Resultat");
+			// excel.wb = WorkbookFactory.create(new File(name));
+			excel.sheet = excel.wb.getSheet(sheetName);
 
 			return excel;
 		} catch (Exception e) {
@@ -52,15 +52,15 @@ public class ExcelController {
 	}
 
 	// Creating a new excel file by using our starting file : base.xls
-	public static ExcelController newExcel(String nom) throws IOException, InvalidFormatException {
+	public static ExcelController newExcel(String name, String sheetName) throws IOException, InvalidFormatException {
 		ExcelController res = new ExcelController();
 
 		try {
-			// System.out.println("Test nom newExcel : " + nom);
+			// System.out.println("Test name newExcel : " + name);
 			res.wb = WorkbookFactory.create(new File("base.xlsx"));
-			res.sheet = res.wb.getSheet("Resultat");
-			res.name = nom;
-			//res.saving();
+			res.sheet = res.wb.getSheet(sheetName);
+			res.name = name;
+			// res.saving();
 			res.saving();
 
 			return res;
