@@ -11,79 +11,93 @@ import lombok.Setter;
  * Create a genome object with a name, group, references...
  */
 
-public class Genome 
-{
-    private final String mainDir = "Results";
-	@Getter private String kingdom;
-	@Getter private String group;
-	@Getter private String subgroup;	
-	@Getter private String name;
-	@Getter private String bioproject;
-	@Getter @Setter private String gcf;
-	@Getter private ArrayList<String[]> refseq;
-	@Getter @Setter private String updateDate;
-	
-	@Getter @Setter private long nbSeqChrom;
-	@Getter @Setter private long nbSeqChloro;
-	@Getter @Setter private long nbSeqMito;
-	@Getter @Setter private long nbSeqPlasm;
-	
-	public Genome(String kingdom, String group, String subgroup, String name, String bioproject) 
-	{
-		this.kingdom=kingdom.replaceAll(" ", "_");
-		this.group=group.replaceAll(" ", "_");
-		this.subgroup=subgroup.replaceAll(" ", "_");
-		this.name=name.replaceAll(" ", "_");
-		this.bioproject=bioproject;
+public class Genome {
+	@Getter
+	private String kingdom;
+	@Getter
+	private String group;
+	@Getter
+	private String subgroup;
+	@Getter
+	private String name;
+	@Getter
+	private String bioproject;
+	@Getter
+	@Setter
+	private String gcf;
+	@Getter
+	private ArrayList<String[]> refseq;
+	@Getter
+	@Setter
+	private String updateDate;
+
+	@Getter
+	@Setter
+	private long nbSeqChrom;
+	@Getter
+	@Setter
+	private long nbSeqChloro;
+	@Getter
+	@Setter
+	private long nbSeqMito;
+	@Getter
+	@Setter
+	private long nbSeqPlasm;
+
+	private final String mainDir = "Results";
+
+	public Genome(String kingdom, String group, String subgroup, String name, String bioproject) {
+		this.kingdom = kingdom.replaceAll(" ", "_");
+		this.group = group.replaceAll(" ", "_");
+		this.subgroup = subgroup.replaceAll(" ", "_");
+		this.name = name.replaceAll(" ", "_");
+		this.bioproject = bioproject;
 		this.refseq = new ArrayList<String[]>();
-		this.nbSeqChrom=0;
-		this.nbSeqChloro=0;
-		this.nbSeqMito=0;
-		this.nbSeqPlasm=0;
-    }
+		this.nbSeqChrom = 0;
+		this.nbSeqChloro = 0;
+		this.nbSeqMito = 0;
+		this.nbSeqPlasm = 0;
+	}
 
-    public String getKingdomChemin() {
-        return this.mainDir + "/" + this.kingdom;
-    }
+	public String getKingdomChemin() {
+		return this.mainDir + "/" + this.kingdom;
+	}
 
-	public String getGroupChemin() 
-	{
+	public String getGroupChemin() {
 		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup();
 	}
-	
-	public String getSubGroupChemin() 
-	{
+
+	public String getSubGroupChemin() {
 		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup();
 	}
-	
-	public String getChemin() 
-	{
-		//if(Interface.jcb_fin.isSelected())
-			//return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.getName()+"[" + this.getBioproject() +"]";
-		//else
-			return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.getName();
+
+	public String getChemin() {
+		// if(Interface.jcb_fin.isSelected())
+		// return this.kingdom + "/" + this.getGroup() + "/" +
+		// this.getSubgroup() + "/" + this.getName()+"[" + this.getBioproject()
+		// +"]";
+		// else
+		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/"
+				+ this.getName();
 
 	}
-	
-	public int nbRefSeq() 
-	{
+
+	public String getMainDir() {
+		return mainDir;
+	}
+
+	public int nbRefSeq() {
 		return this.getRefseq().size();
 	}
-	
-	public boolean exists()
-	{
-		File f= new File(this.getChemin());
-		if(f.exists())
-		{
+
+	public boolean exists() {
+		File f = new File(this.getChemin());
+		if (f.exists()) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
-
-	public String getMainDir(){return mainDir;}
 
 	public String getGroup() {
 		return group;
@@ -92,7 +106,7 @@ public class Genome
 	public void setGroup(String group) {
 		this.group = group;
 	}
-	
+
 	public String getSubgroup() {
 		return subgroup;
 	}
@@ -182,14 +196,13 @@ public class Genome
 	}
 
 	@Override
-	public String toString() 
-	{
+	public String toString() {
 		ArrayList<String> numRefSeq = new ArrayList<String>();
-		for(String[] ref : this.refseq)
-		{
+		for (String[] ref : this.refseq) {
 			numRefSeq.add(ref[0]);
 		}
-		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.name + numRefSeq ;
+		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.name
+				+ numRefSeq;
 	}
-	
+
 }

@@ -25,7 +25,7 @@ public class DownloadTool
 		}
 	}
 	
-    public static void getFile(String host, String name)
+    public static void getFile(String host, String name, int nbRelances)
     {
         InputStream input = null;
         FileOutputStream output = null;
@@ -42,30 +42,36 @@ public class DownloadTool
             // Retrieve and saving in a temp file
             
             input = connection.getInputStream();
-            String fileName = name;
-            output = new FileOutputStream(fileName);
-            byte[] buffer = new byte[1024];
-            int read;
-
-            while ((read = input.read(buffer)) > 0)
-            {
-            	output.write(buffer, 0, read);
+            if(input != null) {
+	            String fileName = name;
+	            output = new FileOutputStream(fileName);
+	            byte[] buffer = new byte[1024];
+	            int read = 0;
+	
+	            while ((read = input.read(buffer)) > 0)
+	            {
+	            	output.write(buffer, 0, read);
+	            }
+	            output.flush();
+	            
             }
-            output.flush();
             
             ihm.addLog("--- Fin du telechargement ---");   
         }
         catch (Exception e)
         {
         	try {
-        		ihm.addLog("Erreur de telechargement sur " + name + " a l'adresse " + host);
-        		ihm.addLog("Tentative de relance dans 5 secondes");
-				Thread.sleep(5000);
-				getFile(host, name);
+        		if(nbRelances <= 3) {
+	        		ihm.addLog("Erreur de telechargement sur " + name + " a l'adresse " + host);
+	        		ihm.addLog("Tentative de relance n� "+nbRelances+" dans 5 secondes");
+					Thread.sleep(5000);
+					getFile(host, name, nbRelances+1);
+        		}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
             System.out.println("Erreur getFile : " + e.toString()); 
+            e.printStackTrace();
         }
         finally
         {
