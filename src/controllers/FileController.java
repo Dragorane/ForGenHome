@@ -76,7 +76,7 @@ public class FileController {
 		String dossier = "/Genome/" + genome.getCheminSansMainDir();
 		bewFile(dossier);
 
-		String fichier = dossier + refseq + ".txt";
+		String fichier = dossier + "/Genome_Organism.txt";
 
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
@@ -101,7 +101,7 @@ public class FileController {
 		String dossier = "/Gene" + genome.getCheminSansMainDir();
 		bewFile(dossier);
 
-		String fichier = dossier + "/infos.txt";
+		String fichier = dossier + "/Gene_" + genome.nbRefSeq() + "_Organism" + ".txt";
 
 		PrintWriter out = null;
 		try {
