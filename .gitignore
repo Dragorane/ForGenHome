@@ -1,0 +1,36 @@
+#Personal for ForGenHome
+bin/
+out/
+RemoteSystemsTempFiles/
+.metadata/
+result/
+Eukaryotes/
+Prokaryotes/
+Viruses/
+state_viruses.txt
+state_prokaryotes.txt
+state_eukaryotes.txt
+viruses.txt
+prokaryotes.txt
+eukaryotes.txt
+temp
+
+#global
+*.class
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
