@@ -303,15 +303,9 @@ public class ExcelController
 
 	public void addingNbSeq(long nbSeq)
 	{
-		try {
 			line = sheet.getRow(0);
 			cell = line.getCell(9);
-		}
-		catch (Exception e)
-		{
 
-			System.out.println("Debug ERREUR : addingNbSeq lecteur excel ");
-		}
 
 
 		double totalSeq = Double.parseDouble(cell.toString()) + nbSeq;

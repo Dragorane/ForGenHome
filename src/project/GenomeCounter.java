@@ -105,6 +105,8 @@ public class GenomeCounter extends Thread
 			{
 				genome.setNbSeqMito(genome.getNbSeqMito()+1);
 			}
+			// On ajoute aussi le résultat dans l'onglet de la séquence du génome
+			genome.setNbSeqTemp(genome.getNbSeqTemp()+1);
 
 			
 			int ph = 0;
@@ -186,7 +188,7 @@ public class GenomeCounter extends Thread
 		{
 			boolean optionInfo = this.ihm_log.check_cds.isSelected();
 			boolean optionSequence = this.ihm_log.check_sequence.isSelected();
-			
+			String typeName = "";
 			StateController etat = StateController.checkState(file);
 			
 			ihm_log.addLog("--- Demarrage du traitement " + file + "---\n");
@@ -217,7 +219,7 @@ public class GenomeCounter extends Thread
 					sequence_info = null;
 					resultatsTemp = null;
 
-					// On recupere un des genomes deja telecharger
+					// On recupere un des genomes deja telechargé
 					genome = getGenome.get(etat);
 					
 					if (genome == null) 
@@ -240,8 +242,7 @@ public class GenomeCounter extends Thread
 							// On recupere la refseq et son type
 							String[] ref_type = genome.getRefseq().get(etat.getRefSeqNumber());
 							String refseq = ref_type[0];
-							String type=ref_type[1];						
-							System.out.println("Minipera : " + refseq);
+							String type=ref_type[1];
 							// On recupere la sequence et les infos (genes) associes 
 							sequence_info = getGenome.getSequence(genome, refseq, optionSequence);
 
@@ -256,39 +257,31 @@ public class GenomeCounter extends Thread
 							{
 								if(type.equals("chrom"))
 								{
+									typeName = "Chromosome_";
 									resultatsChrom = ajoutResultats(genome, sequence, type, resultatsChrom);
 								}
 								else if (type.equals("chloro"))
 								{
+									typeName = "Chloroplast_";
 									resultatsChloro = ajoutResultats(genome, sequence, type, resultatsChloro);
 								}
 								else if (type.equals("plasm"))
 								{
+									typeName = "Plasmid_";
 									resultatsPlasm = ajoutResultats(genome, sequence, type, resultatsPlasm);
 								}
 								else if (type.equals("mito"))
 								{
+									typeName = "Mitochondrion_";
 									resultatsMito = ajoutResultats(genome, sequence, type, resultatsMito);	
 								}
-								//minipera
-								try {
-									resultatsTemp = ajoutResultats(genome, sequence, type, resultatsTemp);
-								}
-								catch (Exception e)
-								{
-									System.out.println("ERREUR lors de l'ajout resultat séquence " + refseq + " " + e);
-								}
+								resultatsTemp = ajoutResultats(genome, sequence, type, resultatsTemp);
 
 
-								try {
-									FileController.savingResults(genome, type, resultatsTemp, type + "_" + refseq);
-							}
-								catch (Exception e)
-							{
-								System.out.println("ERREUR lors de sauvegarde resultat séquence " + refseq + " " + e);
 							}
 
-							}
+							// On enregistre les résultats de la séquence dans l'onglet associé
+							FileController.savingResults(genome, type, resultatsTemp, typeName + refseq);
 							
 							etat.increRefseq();;
 							FileController.enregistrer(etat, file);
