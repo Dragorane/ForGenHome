@@ -72,7 +72,8 @@ public class FileController {
 
 	// Saving sequences of a genome (in option)
 	public static void sauvegarderSequence(Genome genome, String refseq, String sequence) {
-		String dossier = genome.getChemin() + "/Genome/";
+		//genki
+		String dossier = genome.getChemin();
 		bewFile(dossier);
 
 		String fichier = dossier + refseq + ".txt";
