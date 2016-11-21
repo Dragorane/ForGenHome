@@ -178,7 +178,7 @@ public class FileController {
 		writingExcel(genome.getKingdomChemin(), genome, type, resultats, "kingdom");
 	}
 
-	// Sauvegarder les résultats dans un onglet du fichier excel
+	// Sauvegarder les rï¿½sultats dans un onglet du fichier excel
 	public static void savingOngletResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats,
 			String sheetName) {
 		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "organisme", sheetName);
@@ -208,7 +208,7 @@ public class FileController {
 				fileName = dirName + "/Total_" + genome.getKingdom() + ".xlsx";
 				break;
 			case "organisme":
-				fileName = dirName + "/Total_" + genome.getName() + ".xlsx";
+				fileName = dirName + "/" + genome.getName() + ".xlsx";
 				break;
 			default:
 				System.out.println("Error location : " + location + " for Genome : " + genome.getName());
@@ -265,7 +265,7 @@ public class FileController {
 		}
 	}
 
-	// Deuxième fonction pour ajouter les onglets spécifiques aux séquences
+	// Deuxiï¿½me fonction pour ajouter les onglets spï¿½cifiques aux sï¿½quences
 	public static void writingExcel(String dirName, Genome genome, String type,
 			ArrayList<HashMap<String, BigInteger>> resultats, String location, String newSheetName) {
 		try {
@@ -287,7 +287,7 @@ public class FileController {
 				fileName = dirName + "/Total_" + genome.getKingdom() + ".xlsx";
 				break;
 			case "organisme":
-				fileName = dirName + "/Total_" + genome.getName() + ".xlsx";
+				fileName = dirName + "/" + genome.getName() + ".xlsx";
 				break;
 			default:
 				System.out.println("Error location : " + location + " for Genome : " + genome.getName());
