@@ -83,7 +83,7 @@ public class Genome {
 	}
 
 	//genki
-	public String getCheminSansMainDir() {
+	public String getCheminNoMainDir() {
 		// if(Interface.jcb_fin.isSelected())
 		// return this.kingdom + "/" + this.getGroup() + "/" +
 		// this.getSubgroup() + "/" + this.getName()+"[" + this.getBioproject()

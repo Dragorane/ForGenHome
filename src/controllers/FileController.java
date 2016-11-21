@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.zip.*;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
@@ -73,11 +74,11 @@ public class FileController {
 	// Saving sequences of a genome (in option)
 	public static void sauvegarderSequence(Genome genome, String refseq, String sequence) {
 		//genki
-		String dossier = "/Genome/" + genome.getCheminSansMainDir();
+		String dossier = "/Genome/" + genome.getCheminNoMainDir();
 		bewFile(dossier);
 
 		String fichier = dossier + "/Genome_Organism.txt";
-
+		//Note : Compression de fichier zip --> http://www.fobec.com/java/1096/compresser-fichiers-avec-zipoutputstream.html
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 			out.println(sequence);
@@ -98,9 +99,9 @@ public class FileController {
 	// Possibility of saving 'genes' used (option)
 	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) {
 		//genki
-		String dossier = "/Gene" + genome.getCheminSansMainDir();
+		String dossier = "/Gene" + genome.getCheminNoMainDir();
 		bewFile(dossier);
-
+		//Note : remplacer genome.nbRefSeq() par une simple variable incrémentale ?
 		String fichier = dossier + "/Gene_" + genome.nbRefSeq() + "_Organism" + ".txt";
 
 		PrintWriter out = null;
