@@ -15,6 +15,7 @@ import java.util.zip.*;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import project.Compresser;
 import project.Genome;
 import project.MainLauncher;
 
@@ -78,7 +79,7 @@ public class FileController {
 		bewFile(dossier);
 
 		String fichier = dossier + "/Genome_Organism.txt";
-		//Note : Compression de fichier zip --> http://www.fobec.com/java/1096/compresser-fichiers-avec-zipoutputstream.html
+
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 			out.println(sequence);
@@ -103,7 +104,8 @@ public class FileController {
 		bewFile(dossier);
 		//Note : remplacer genome.nbRefSeq() par une simple variable incrémentale ?
 		String fichier = dossier + "/Gene_" + genome.nbRefSeq() + "_Organism" + ".txt";
-
+		//Note : Compression de fichier zip --> http://www.fobec.com/java/1096/compresser-fichiers-avec-zipoutputstream.html
+		Compresser zip = new Compresser(".zip");
 		PrintWriter out = null;
 		try {
 			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
