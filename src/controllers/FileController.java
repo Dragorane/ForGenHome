@@ -109,6 +109,19 @@ public class FileController {
 
 		//Note : Compression de fichier zip --> http://www.baeldung.com/java-compress-and-uncompress
 
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
+
+			for (String record : infos) {
+				out.println(record);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			out.close();
+		}
+
 		FileOutputStream archive = new FileOutputStream("Compression.zip");
 		ZipOutputStream zipOut = new ZipOutputStream(archive);
 		File fileToZip = new File(fichier);
@@ -123,19 +136,6 @@ public class FileController {
 		zipOut.close();
 		fis.close();
 		archive.close();
-
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
-
-			for (String record : infos) {
-				out.println(record);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			out.close();
-		}
 	}
 
 	// Saving the state
