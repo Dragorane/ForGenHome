@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Path;
@@ -13,9 +15,9 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.zip.*;
 
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
-import project.Compresser;
 import project.Genome;
 import project.MainLauncher;
 
@@ -78,7 +80,7 @@ public class FileController {
 		String dossier = "/Genome/" + genome.getCheminNoMainDir();
 		bewFile(dossier);
 
-		String fichier = dossier + "/Genome_Organism.txt";
+		String fichier = dossier + "/Genome_" + genome.getName() + ".txt";
 
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
@@ -98,14 +100,30 @@ public class FileController {
 	}
 
 	// Possibility of saving 'genes' used (option)
-	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) {
+	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) throws IOException {
 		//genki
-		String dossier = "/Gene" + genome.getCheminNoMainDir();
+		String dossier = "/Gene/" + genome.getCheminNoMainDir();
 		bewFile(dossier);
 		//Note : remplacer genome.nbRefSeq() par une simple variable incrémentale ?
-		String fichier = dossier + "/Gene_" + genome.nbRefSeq() + "_Organism" + ".txt";
-		//Note : Compression de fichier zip --> http://www.fobec.com/java/1096/compresser-fichiers-avec-zipoutputstream.html
-		Compresser zip = new Compresser(".zip");
+		String fichier = dossier + "/Gene_" + genome.nbRefSeq() + "_" + genome.getName() + ".txt";
+
+		//Note : Compression de fichier zip --> http://www.baeldung.com/java-compress-and-uncompress
+
+		FileOutputStream archive = new FileOutputStream("Compression.zip");
+		ZipOutputStream zipOut = new ZipOutputStream(archive);
+		File fileToZip = new File(fichier);
+		FileInputStream fis = new FileInputStream(fileToZip);
+		ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+		zipOut.putNextEntry(zipEntry);
+		final byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+		zipOut.close();
+		fis.close();
+		archive.close();
+
 		PrintWriter out = null;
 		try {
 			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
