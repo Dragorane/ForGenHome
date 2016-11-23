@@ -105,7 +105,7 @@ public class FileController {
 		String dossier = "/Gene/" + genome.getCheminNoMainDir();
 		bewFile(dossier);
 		//Note : remplacer genome.nbRefSeq() par une simple variable incrémentale ?
-		String fichier = dossier + "/Gene_" + genome.nbRefSeq() + "_" + genome.getName() + ".txt";
+		String fichier = dossier + genome.getRefseq() + "_" + genome.nbRefSeq() + "_" + genome.getName() + ".txt";
 
 		//Note : Compression de fichier zip --> http://www.baeldung.com/java-compress-and-uncompress
 
