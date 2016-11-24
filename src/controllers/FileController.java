@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.zip.*;
 
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import project.Genome;
@@ -104,16 +103,14 @@ public class FileController {
 		//genki
 		String dossier = "/Gene/" + genome.getCheminNoMainDir();
 		bewFile(dossier);
-		//Note : remplacer genome.nbRefSeq() par une simple variable incrémentale ?
-		String fichier = dossier + genome.getRefseq() + "_" + genome.nbRefSeq() + "_" + genome.getName() + ".txt";
-
-		//Note : Compression de fichier zip --> http://www.baeldung.com/java-compress-and-uncompress
+		String fichier = dossier + "/RefSeq" + "_" + genome.nbRefSeq() + "_" + genome.getName() + ".txt";
 
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
+			//out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 
 			for (String record : infos) {
+				out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 				out.println(record);
 			}
 		} catch (IOException e) {
@@ -122,8 +119,10 @@ public class FileController {
 			out.close();
 		}
 
-		FileOutputStream archive = new FileOutputStream("Compression.zip");
-		ZipOutputStream zipOut = new ZipOutputStream(archive);
+		//Note : Compression de fichier zip --> http://www.baeldung.com/java-compress-and-uncompress
+		System.out.println("Avant création zip !!!!!!!");
+		FileOutputStream fos = new FileOutputStream(dossier + "/Compression.zip");
+		ZipOutputStream zipOut = new ZipOutputStream(fos);
 		File fileToZip = new File(fichier);
 		FileInputStream fis = new FileInputStream(fileToZip);
 		ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
@@ -135,7 +134,8 @@ public class FileController {
 		}
 		zipOut.close();
 		fis.close();
-		archive.close();
+		fos.close();
+		System.out.println("Apres création zip !!!!!!!");
 	}
 
 	// Saving the state
