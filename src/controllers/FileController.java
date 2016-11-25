@@ -10,9 +10,7 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import java.util.zip.*;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -103,37 +101,46 @@ public class FileController {
 		//genki
 		String dossier = "/Gene/" + genome.getCheminNoMainDir();
 		bewFile(dossier);
-		String fichier = dossier + "/RefSeq" + "_" + genome.nbRefSeq() + "_" + genome.getName() + ".txt";
 
+		int i = 1;
 		PrintWriter out = null;
+		List<String> srcFiles = new ArrayList<>();
+
 		try {
-			//out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 
 			for (String record : infos) {
+
+				String fichier = dossier + "/" + "GenBank" + "_" + i + "_" + genome.getName() + ".txt";
 				out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 				out.println(record);
+				out.close();
+				out = null;
+
+				srcFiles.add(fichier);
+				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			out.close();
 		}
 
 		//Note : Compression de fichier zip --> http://www.baeldung.com/java-compress-and-uncompress
 		System.out.println("Avant création zip !!!!!!!");
-		FileOutputStream fos = new FileOutputStream(dossier + "/Compression.zip");
+		FileOutputStream fos = new FileOutputStream(dossier + "/Gene_Compressed.zip");
 		ZipOutputStream zipOut = new ZipOutputStream(fos);
-		File fileToZip = new File(fichier);
-		FileInputStream fis = new FileInputStream(fileToZip);
-		ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-		zipOut.putNextEntry(zipEntry);
-		final byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
+		for (String srcFile : srcFiles) {
+			File fileToZip = new File(srcFile);
+			FileInputStream fis = new FileInputStream(fileToZip);
+			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+			zipOut.putNextEntry(zipEntry);
+
+			byte[] bytes = new byte[1024];
+			int length;
+			while((length = fis.read(bytes)) >= 0) {
+				zipOut.write(bytes, 0, length);
+			}
+			fis.close();
 		}
 		zipOut.close();
-		fis.close();
 		fos.close();
 		System.out.println("Apres création zip !!!!!!!");
 	}
