@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Date;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -43,12 +44,56 @@ public class GenomeReader {
 
 	static Interface ihm_log = null;
 
+	//Temps moyen de téléchargement/maj d'un genome.
+	private static long tpsMoyen = 0;
+	private static Date depart = new Date();
+
+
 	// Liste des fichiers e telecharger
 	// static ArrayList<String> files = MainLauncher.fichiersBioinfo;
 
 	/*
 	 * Public functions
 	 */
+
+	//Modification du temps moyen
+	private void updateTpsMoyen () {
+		Date now = new Date();
+		long tpsPasse = tpsMoyen * ihm_log.progress_bar.getValue();
+		long tps = now.getTime() - (depart.getTime() + tpsPasse);
+		tpsMoyen = (tpsPasse + tps) / ihm_log.progress_bar.getValue()+1;
+	}
+
+	// S'occupe de l'affichage de la progressBar
+	private void afficheProgressBar() {
+		int value = ihm_log.progress_bar.getValue()+1;
+		ihm_log.progress_bar.setValue(value+1);
+		int max = ihm_log.progress_bar.getMaximum();
+		String affichage = "";
+		long temps = tpsMoyen*(max-value);
+		int secondes = (int) (temps / 1000) % 60 ;
+		int minutes = (int) ((temps / (1000*60)) % 60);
+		int heures   = (int) ((temps / (1000*60*60)) % 24);
+
+		temps = temps - minutes;
+
+		int milliseconde = (int) temps - secondes;
+		if (tpsMoyen != 0 ){
+			affichage = value + " / " + max + " ||| Temps restant : ";
+			if ( heures != 0 ){
+				affichage = affichage + heures+ " h ";
+			}
+			if ( minutes != 0 ){
+				affichage = affichage + minutes +" min ";
+			}
+			if ( secondes != 0 ){
+				affichage = affichage + secondes +" s.";
+			}
+		} else {
+			affichage = value + " / " + max;
+		}
+		ihm_log.progress_bar.setString( affichage );
+	}
 
 	// Getting different files on the ncbi's website
 	public void getFiles(Interface i, String file) {
@@ -78,8 +123,8 @@ public class GenomeReader {
 
 	// Getting a genome (from the file we downloaded)
 	public Genome get(StateController etat) throws FileNotFoundException {
-		ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-		ihm_log.progress_bar.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
+		updateTpsMoyen ();
+		afficheProgressBar();
 		Genome genome;
 
 		// System.out.println("Test etat getNomFichier : " +
@@ -154,16 +199,13 @@ public class GenomeReader {
 							genome.getRefseq().add(res);
 						}
 					}
-					ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-					ihm_log.progress_bar
-							.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
+					updateTpsMoyen ();
+					afficheProgressBar();
 
 				} else {
 					ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-					ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-					ihm_log.progress_bar
-							.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
-
+					updateTpsMoyen ();
+					afficheProgressBar();
 					ihm_log.addLog("");
 					// System.out.println(ihm_log.progress_bar.getValue());
 				}
@@ -174,8 +216,8 @@ public class GenomeReader {
 
 		// Eukaryotes
 		else if (genome.getKingdom().equals("Eukaryotes")) {
-			ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-			ihm_log.progress_bar.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
+			updateTpsMoyen ();
+			afficheProgressBar();
 
 			genome.setUpdateDate(tabLigne[15]);
 			if (!tabLigne[14].equals("Contig") && !tabLigne[14].equals("Scaffold") && !isUptoDate(genome)) {
@@ -185,9 +227,8 @@ public class GenomeReader {
 				}
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-				ihm_log.progress_bar
-						.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
+				updateTpsMoyen ();
+				afficheProgressBar();
 				ihm_log.addLog("");
 			}
 		}
@@ -198,17 +239,13 @@ public class GenomeReader {
 			genome.setUpdateDate(tabLigne[11]);
 			if (!isUptoDate(genome)) {
 				recupererRefSeqVir(genome, 1);
-				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-				ihm_log.progress_bar
-						.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
-
+				updateTpsMoyen ();
+				afficheProgressBar();
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
 				ihm_log.addLog("");
-				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-				ihm_log.progress_bar
-						.setString(ihm_log.progress_bar.getValue() + " / " + ihm_log.progress_bar.getMaximum());
-
+				updateTpsMoyen ();
+				afficheProgressBar();
 			}
 		}
 		fichier = null;
