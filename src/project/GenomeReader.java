@@ -107,7 +107,7 @@ public class GenomeReader {
 		int heures   = ((int) (tempsint / 3600)) %24;
 		int jours = (int) (tempsint/(3600*24));
 
-		if (tpsMoyen != 0 && getNombreSequencesLues() > 5){
+		if (tpsMoyen != 0 && getNombreSequencesLues() > 1){
 			affichage = value + " / " + max + " ||| Temps restant : ";
 			if ( jours != 0 ){
 				affichage = affichage + jours+ " j ";
@@ -138,7 +138,6 @@ public class GenomeReader {
 				ihm_log.addLog("--- Telechargement de " + tmpFile.getName() + " ---");
 
 				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
-				setNombreSequencesLues(getNombreSequencesLues()+1);
 				// Verification du nom de fichier pour telecharger la bonne
 				// liste
 				if (tmpFile.getName().equals("prokaryotes.txt")) {

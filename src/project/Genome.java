@@ -72,11 +72,6 @@ public class Genome {
 	}
 
 	public String getChemin() {
-		// if(Interface.jcb_fin.isSelected())
-		// return this.kingdom + "/" + this.getGroup() + "/" +
-		// this.getSubgroup() + "/" + this.getName()+"[" + this.getBioproject()
-		// +"]";
-		// else
 		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/";
 
 	}

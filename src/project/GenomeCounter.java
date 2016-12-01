@@ -3,6 +3,7 @@ package project;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import controllers.FileController;
@@ -41,14 +42,14 @@ public class GenomeCounter extends Thread {
 
 	// Ajoute les resultats a la HashMap de resultat
 	public static ArrayList<HashMap<String, BigInteger>> ajoutResultats(Genome genome, String sequence, String type,
-			ArrayList<HashMap<String, BigInteger>> ancienneMap) {
+																		ArrayList<HashMap<String, BigInteger>> ancienneMap) {
 		HashMap<String, BigInteger> Ph0;
 		HashMap<String, BigInteger> Ph1;
 		HashMap<String, BigInteger> Ph2;
 
-		// HashMap<String, BigInteger> PrefPh0;
-		// HashMap<String, BigInteger> PrefPh1;
-		// HashMap<String, BigInteger> PrefPh2;
+		HashMap<String, BigInteger> PrefPh0;
+		HashMap<String, BigInteger> PrefPh1;
+		HashMap<String, BigInteger> PrefPh2;
 
 		HashMap<String, BigInteger> TempPh0;
 		HashMap<String, BigInteger> TempPh1;
@@ -75,18 +76,18 @@ public class GenomeCounter extends Thread {
 			Ph2 = genererMap();
 			Ph0Dinucleotide = genererMapDinucleotide();
 			Ph1Dinucleotide = genererMapDinucleotide();
-			// PrefPh0 = genererMap();
-			// PrefPh1 = genererMap();
-			// PrefPh2 = genererMap();
+			PrefPh0 = genererMap();
+			PrefPh1 = genererMap();
+			PrefPh2 = genererMap();
 		} else {
 			Ph0 = ancienneMap.get(0);
 			Ph1 = ancienneMap.get(1);
 			Ph2 = ancienneMap.get(2);
 			Ph0Dinucleotide = ancienneMap.get(3);
 			Ph1Dinucleotide = ancienneMap.get(4);
-			// PrefPh0 = ancienneMap.get(3);
-			// PrefPh1 = ancienneMap.get(4);
-			// PrefPh2 = ancienneMap.get(5);
+			PrefPh0 = ancienneMap.get(5);
+			PrefPh1 = ancienneMap.get(6);
+			PrefPh2 = ancienneMap.get(7);
 		}
 
 		BigInteger nbTrinucleotide;
@@ -203,24 +204,21 @@ public class GenomeCounter extends Thread {
 				}
 			}
 
-			// for (@SuppressWarnings("rawtypes")
-			// Map.Entry mapentry : TempPh0.entrySet()) {
-			// ArrayList<Integer> maxtab = maxPh(TempPh0.get(mapentry.getKey()),
-			// TempPh1.get(mapentry.getKey()),
-			// TempPh2.get(mapentry.getKey()));
-			// for (Integer w : maxtab) {
-			// if (w == 0) {
-			// BigInteger bg = PrefPh0.get(mapentry.getKey());
-			// PrefPh0.put((String) mapentry.getKey(), bg.add(BigInteger.ONE));
-			// } else if (w == 1) {
-			// BigInteger bg = PrefPh1.get(mapentry.getKey());
-			// PrefPh1.put((String) mapentry.getKey(), bg.add(BigInteger.ONE));
-			// } else {
-			// BigInteger bg = PrefPh2.get(mapentry.getKey());
-			// PrefPh2.put((String) mapentry.getKey(), bg.add(BigInteger.ONE));
-			// }
-			// }
-			// }
+			for(@SuppressWarnings("rawtypes") Map.Entry mapentry : TempPh0.entrySet()) {
+				ArrayList<Integer> maxtab = maxPh(TempPh0.get(mapentry.getKey()), TempPh1.get(mapentry.getKey()), TempPh2.get(mapentry.getKey()));
+				for (Integer w : maxtab) {
+					if (w == 0) {
+						BigInteger bg = PrefPh0.get(mapentry.getKey());
+						PrefPh0.put((String) mapentry.getKey(), bg.add(BigInteger.ONE));
+					} else if (w == 1) {
+						BigInteger bg = PrefPh1.get(mapentry.getKey());
+						PrefPh1.put((String) mapentry.getKey(), bg.add(BigInteger.ONE));
+					} else {
+						BigInteger bg = PrefPh2.get(mapentry.getKey());
+						PrefPh2.put((String) mapentry.getKey(), bg.add(BigInteger.ONE));
+					}
+				}
+			}
 		}
 
 		mapResultat.add(Ph0);
@@ -230,9 +228,9 @@ public class GenomeCounter extends Thread {
 		mapResultat.add(Ph0Dinucleotide);
 		mapResultat.add(Ph1Dinucleotide);
 
-		// mapResultat.add(PrefPh0);
-		// mapResultat.add(PrefPh1);
-		// mapResultat.add(PrefPh2);
+		mapResultat.add(PrefPh0);
+		mapResultat.add(PrefPh1);
+		mapResultat.add(PrefPh2);
 
 		return mapResultat;
 	}
@@ -258,7 +256,7 @@ public class GenomeCounter extends Thread {
 		ArrayList<HashMap<String, BigInteger>> resultatsChloro = new ArrayList<HashMap<String, BigInteger>>();
 		ArrayList<HashMap<String, BigInteger>> resultatsPlasm = new ArrayList<HashMap<String, BigInteger>>();
 		ArrayList<HashMap<String, BigInteger>> resultatsMito = new ArrayList<HashMap<String, BigInteger>>();
-		// Ajout du compteur pour la séquence actuelle
+		// Ajout du compteur pour la sï¿½quence actuelle
 		ArrayList<HashMap<String, BigInteger>> resultatsSequenceTemp = new ArrayList<HashMap<String, BigInteger>>();
 
 		getGenome.getFiles(ihm_log, file);
@@ -286,12 +284,13 @@ public class GenomeCounter extends Thread {
 				if (!genome.exists() && genome.getRefseq().size() != 0) {
 					ihm_log.addLog("\n--- Nouvel organisme : " + genome + "---");
 					ihm_log.addLog("Contenu dans " + etat.getNomFichier() + " [ " + (etat.getLineNumber() + 1) + " ]");
+					getGenome.setNombreSequencesLues(getGenome.getNombreSequencesLues()+1);
 					while (!etat.toutRecuperer(genome.getRefseq().size())) {
 						// On recupere la refseq et son type
 						String[] ref_type = genome.getRefseq().get(etat.getRefSeqNumber());
 						String refseq = ref_type[0];
 						String type = ref_type[1];
-						
+
 
 						// On recupere la sequence et les infos (genes) associes
 						sequence_info = getGenome.getSequence(genome, refseq, optionSequence, file);
@@ -319,15 +318,15 @@ public class GenomeCounter extends Thread {
 								typeName = "Mitochondrion_";
 								resultatsMito = ajoutResultats(genome, sequence, type, resultatsMito);
 							}
-							
-							// Calcul de la hashMap Resultat de la séquence en cours
+
+							// Calcul de la hashMap Resultat de la sï¿½quence en cours
 							resultatsSequenceTemp = ajoutResultats(genome, sequence, type, resultatsSequenceTemp);
 						}
-						
+
 						// Sauvegarder la HashMap de resultat d'un fichier du genome
 						FileController.savingOngletResults(genome, type, resultatsSequenceTemp, typeName + refseq);
 						resultatsSequenceTemp.clear();
-						
+
 						etat.increRefseq();
 						FileController.enregistrer(etat, file);
 					}

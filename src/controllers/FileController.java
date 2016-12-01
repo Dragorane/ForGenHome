@@ -141,18 +141,12 @@ public class FileController {
 
 	}
 
-	// Retrieving the state we saved and creating a new one with these
-	// informations
 	public static StateController retrieveState(String file) {
 		StateController res = null;
 
 		File etat = new File("state_" + file);
-		// System.out.println("Test File etat : " + etat.getName());
 
 		if (etat.exists()) {
-			// System.out.println("Une sauvegarde a ete trouve !");
-			// System.out.println("Recuperation du fichier state.txt");
-
 			Scanner sc = null;
 			try {
 				sc = new Scanner(etat);
@@ -192,10 +186,6 @@ public class FileController {
 			String fileName = "";
 			String sheetName = "";
 			long nbSeq = 0;
-
-			// System.out.println("Debug type : " + type);
-			// System.out.println("Debug nomDossier : " + nomDossier);
-			// System.out.println("Debug genome : " + genome.toString());
 
 			switch (location) {
 			case "subgroup":
@@ -237,7 +227,6 @@ public class FileController {
 				bewFile(dirName);
 			}
 
-			// System.out.println("Debug fichier exists : " + fichier.exists());
 
 			if (fichier.exists()) {
 				System.out.println("File exist !! : " + fileName);
@@ -245,10 +234,8 @@ public class FileController {
 			} else {
 				System.out.println("New Excel !! : " + fileName);
 				excel = ExcelController.newExcel(fileName, sheetName);
-				// System.out.println("Debug excel : " + excel.toString());
 			}
 
-			// System.out.println("Debug resultats : " + resultats.toString());
 			System.out.println("Debug excel name : " + excel.name);
 
 			if (resultats != null) {
@@ -271,10 +258,6 @@ public class FileController {
 		try {
 			String fileName = "";
 			long nbSeq = 0;
-
-			// System.out.println("Debug type : " + type);
-			// System.out.println("Debug nomDossier : " + nomDossier);
-			// System.out.println("Debug genome : " + genome.toString());
 
 			switch (location) {
 			case "subgroup":
@@ -316,7 +299,6 @@ public class FileController {
 				System.out.println("Debug excel : " + excel.toString());
 			}
 
-			// System.out.println("Debug resultats : " + resultats.toString());
 			System.out.println("Debug excel name : " + excel.name);
 			System.out.println("Debug excel sheet name : " + excel.sheet.getSheetName());
 
@@ -347,7 +329,6 @@ public class FileController {
 			fichier.write(genome.getUpdateDate());
 			fichier.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -362,7 +343,6 @@ public class FileController {
 				fichier.write(genome.getUpdateDate());
 				fichier.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
