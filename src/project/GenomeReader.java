@@ -45,23 +45,52 @@ public class GenomeReader {
 	static Interface ihm_log = null;
 
 	//Temps moyen de téléchargement/maj d'un genome.
-	private static long tpsMoyen = 0;
+	private static double tpsMoyen = 0.0;
 	private static Date depart = new Date();
-
+	private static int nombreSequencesLues = 0;
 
 	// Liste des fichiers e telecharger
+
+	public static int getNombreSequencesLues() {
+		return nombreSequencesLues;
+	}
+
+	public static void setNombreSequencesLues(int nombreSequencesLues) {
+		GenomeReader.nombreSequencesLues = nombreSequencesLues;
+	}
+
 	// static ArrayList<String> files = MainLauncher.fichiersBioinfo;
 
-	/*
+	public static void setTpsMoyen(double tpsMoyen) {
+		GenomeReader.tpsMoyen = tpsMoyen;
+	}
+
+	public static double getTpsMoyen() {
+		return tpsMoyen;
+	}
+/*
 	 * Public functions
 	 */
 
 	//Modification du temps moyen
 	private void updateTpsMoyen () {
+
 		Date now = new Date();
-		long tpsPasse = tpsMoyen * ihm_log.progress_bar.getValue();
-		long tps = now.getTime() - (depart.getTime() + tpsPasse);
-		tpsMoyen = (tpsPasse + tps) / ihm_log.progress_bar.getValue()+1;
+		double temp;
+		double tpsPasse = now.getTime() - depart.getTime();
+		tpsPasse = tpsPasse/1000.0;
+		temp = tpsPasse/getNombreSequencesLues();
+		setTpsMoyen(temp);
+
+
+
+
+/* nbSeqLues éléments faits en tpsPasse secondes
+*  m éléments à faire en x secondes
+*  produit en croix : x=m*s/n
+*  ici on calcul s/n, le m est utilisé après
+*  *files away*
+* */
 	}
 
 	// S'occupe de l'affichage de la progressBar
@@ -70,16 +99,19 @@ public class GenomeReader {
 		ihm_log.progress_bar.setValue(value+1);
 		int max = ihm_log.progress_bar.getMaximum();
 		String affichage = "";
-		long temps = tpsMoyen*(max-value);
-		int secondes = (int) (temps / 1000) % 60 ;
-		int minutes = (int) ((temps / (1000*60)) % 60);
-		int heures   = (int) ((temps / (1000*60*60)) % 24);
+		// Ici calcul du m*s/n
+		double temps = getTpsMoyen()*(max-value);
+		int tempsint = (int) temps;
+		int secondes = tempsint % 60 ;
+		int minutes = ((int) (tempsint/60)) % 60;
+		int heures   = ((int) (tempsint / 3600)) %24;
+		int jours = (int) (tempsint/(3600*24));
 
-		temps = temps - minutes;
-
-		int milliseconde = (int) temps - secondes;
-		if (tpsMoyen != 0 ){
+		if (tpsMoyen != 0 && getNombreSequencesLues() > 5){
 			affichage = value + " / " + max + " ||| Temps restant : ";
+			if ( jours != 0 ){
+				affichage = affichage + jours+ " j ";
+			}
 			if ( heures != 0 ){
 				affichage = affichage + heures+ " h ";
 			}
@@ -90,7 +122,7 @@ public class GenomeReader {
 				affichage = affichage + secondes +" s.";
 			}
 		} else {
-			affichage = value + " / " + max;
+			affichage = value + " / " + max + " Calcul du temps restant en cours...";
 		}
 		ihm_log.progress_bar.setString( affichage );
 	}
@@ -104,7 +136,9 @@ public class GenomeReader {
 
 			if (!tmpFile.exists()) {
 				ihm_log.addLog("--- Telechargement de " + tmpFile.getName() + " ---");
+
 				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
+				setNombreSequencesLues(getNombreSequencesLues()+1);
 				// Verification du nom de fichier pour telecharger la bonne
 				// liste
 				if (tmpFile.getName().equals("prokaryotes.txt")) {
