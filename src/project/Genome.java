@@ -189,6 +189,14 @@ public class Genome {
 		this.nbSeqPlasm = nbSeqPlasm;
 	}
 
+	public long getNbSeqTemp() {
+		return nbSeqTemp;
+	}
+
+	public void setNbSeqTemp(long nbSeqTemp) {
+		this.nbSeqTemp = nbSeqTemp;
+	}
+
 	@Override
 	public String toString() {
 		ArrayList<String> numRefSeq = new ArrayList<String>();
