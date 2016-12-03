@@ -12,6 +12,7 @@ import lombok.Setter;
  */
 
 public class Genome {
+	private long nbSeqTemp;
 	@Getter
 	private String kingdom;
 	@Getter
