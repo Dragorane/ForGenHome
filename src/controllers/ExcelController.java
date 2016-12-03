@@ -260,7 +260,7 @@ public class ExcelController {
                         //if(line.getCell(g) == null)
                         //cell = line.createCell(g);
                         //line.getCell(g, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                        cell = line.getCell(g, XSSFRow.CREATE_NULL_AS_BLANK);
+                        cell = line.getCell(g, Row.CREATE_NULL_AS_BLANK);
                         if (cell.toString() == "")
                             cell.setCellValue("0");
                         valeur2 = new BigDecimal(cell.toString());
