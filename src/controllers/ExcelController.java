@@ -156,21 +156,23 @@ public class ExcelController {
         HashMap<String, BigInteger> PrefPh1 = results.get(4);
         HashMap<String, BigInteger> PrefPh2 = results.get(5);
 
-        int ligneCourante = 1;
+        int ligneCourante = 8;
 
-        @SuppressWarnings("unused")
         BigDecimal valeur, valeur2;
         BigInteger nbTrinucleotide;
         BigDecimal pourcentage = new BigDecimal("0");
         BigDecimal totalPh0 = new BigDecimal("0");
         BigDecimal totalPh1 = new BigDecimal("0");
         BigDecimal totalPh2 = new BigDecimal("0");
+        BigDecimal totalPrefPh0 = new BigDecimal("0");
+        BigDecimal totalPrefPh1 = new BigDecimal("0"); 
+        BigDecimal totalPrefPh2 = new BigDecimal("0"); 
 
 
         for (String nomTrinucleotide : generateTriNucleotides()) {
             line = sheet.getRow(ligneCourante);
 
-            for (int l = 1; l < 7; l = l + 2) {
+            for (int l = 1; l < 6; l = l + 2) {
                 cell = line.getCell(l);
                 valeur = new BigDecimal(cell.toString());
                 if (l == 1)  //Ph0
@@ -194,97 +196,36 @@ public class ExcelController {
                 }
             }
 
-            for (int g = 10; g < 13; g++) {
+            for (int g = 7; g < 10; g++) {
                 //if(line.getCell(g) == null)
                 //cell = line.createCell(g);
                 //line.getCell(g, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                cell = line.getCell(g, Row.CREATE_NULL_AS_BLANK);
+                cell = line.getCell(g);
                 if (cell.toString() == "")
                     cell.setCellValue("0");
                 valeur2 = new BigDecimal(cell.toString());
-                if (g == 10)  //Ph0
+                if (g == 7)  //Ph0
                 {
                     nbTrinucleotide = PrefPh0.get(nomTrinucleotide);
                     valeur2 = valeur2.add(new BigDecimal(nbTrinucleotide));
                     cell.setCellValue(valeur2.doubleValue());
-
-                } else if (g == 11) //Ph1
+                    totalPrefPh0 = totalPrefPh0.add(valeur2);
+                } else if (g == 8) //Ph1
                 {
                     nbTrinucleotide = PrefPh1.get(nomTrinucleotide);
                     valeur2 = valeur2.add(new BigDecimal(nbTrinucleotide));
                     cell.setCellValue(valeur2.doubleValue());
+                    totalPrefPh1 = totalPrefPh0.add(valeur2);
                 } else  //Ph2
                 {
                     nbTrinucleotide = PrefPh2.get(nomTrinucleotide);
                     valeur2 = valeur2.add(new BigDecimal(nbTrinucleotide));
                     cell.setCellValue(valeur2.doubleValue());
+                    totalPrefPh2 = totalPrefPh0.add(valeur2);
                 }
             }
 
             ligneCourante++;
-        }
-
-        // Manages the numbers
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                for (int k = 0; k < 4; k++) {
-                    String trinucleotideName = "" + this.nucleotides[i] + this.nucleotides[j] + this.nucleotides[k];
-                    line = sheet.getRow(ligneCourante);
-
-                    for (int l = 1; l < 7; l = l + 2) {
-                        cell = line.getCell(l);
-                        valeur = new BigDecimal(cell.toString());
-                        if (l == 1) // Ph0
-                        {
-                            nbTrinucleotide = Ph0.get(trinucleotideName);
-                            valeur = valeur.add(new BigDecimal(nbTrinucleotide));
-                            cell.setCellValue(valeur.doubleValue());
-                            totalPh0 = totalPh0.add(valeur);
-                        } else if (l == 3) // Ph1
-                        {
-                            nbTrinucleotide = Ph1.get(trinucleotideName);
-                            valeur = valeur.add(new BigDecimal(nbTrinucleotide));
-                            cell.setCellValue(valeur.doubleValue());
-                            totalPh1 = totalPh1.add(valeur);
-                        } else // Ph2
-                        {
-                            nbTrinucleotide = Ph2.get(trinucleotideName);
-                            valeur = valeur.add(new BigDecimal(nbTrinucleotide));
-                            cell.setCellValue(valeur.doubleValue());
-                            totalPh2 = totalPh2.add(valeur);
-                        }
-                    }
-
-
-                    for (int g = 10; g < 13; g++) {
-                        //if(line.getCell(g) == null)
-                        //cell = line.createCell(g);
-                        //line.getCell(g, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                        cell = line.getCell(g, Row.CREATE_NULL_AS_BLANK);
-                        if (cell.toString() == "")
-                            cell.setCellValue("0");
-                        valeur2 = new BigDecimal(cell.toString());
-                        if (g == 10)  //Ph0
-                        {
-                            nbTrinucleotide = PrefPh0.get(trinucleotideName);
-                            valeur2 = valeur2.add(new BigDecimal(nbTrinucleotide));
-                            cell.setCellValue(valeur2.doubleValue());
-
-                        } else if (g == 11) //Ph1
-                        {
-                            nbTrinucleotide = PrefPh1.get(trinucleotideName);
-                            valeur2 = valeur2.add(new BigDecimal(nbTrinucleotide));
-                            cell.setCellValue(valeur2.doubleValue());
-                        } else  //Ph2
-                        {
-                            nbTrinucleotide = PrefPh2.get(trinucleotideName);
-                            valeur2 = valeur2.add(new BigDecimal(nbTrinucleotide));
-                            cell.setCellValue(valeur2.doubleValue());
-                        }
-                    }
-                    ligneCourante++;
-                }
-            }
         }
 
         line = sheet.getRow(ligneCourante);
@@ -292,9 +233,12 @@ public class ExcelController {
         line.getCell(1).setCellValue(totalPh0.doubleValue());
         line.getCell(3).setCellValue(totalPh1.doubleValue());
         line.getCell(5).setCellValue(totalPh2.doubleValue());
+        line.getCell(7).setCellValue(totalPrefPh0.doubleValue());
+        line.getCell(8).setCellValue(totalPrefPh1.doubleValue());
+        line.getCell(9).setCellValue(totalPrefPh2.doubleValue());
 
         // Second step for the percentage
-        for (int i = 1; i < 65; i++) {
+        for (int i = 8; i < 73; i++) {
             line = sheet.getRow(i);
 
             for (int j = 2; j < 7; j = j + 2) {
@@ -318,23 +262,34 @@ public class ExcelController {
 
         }
 
-        line = sheet.getRow(1);
-        cell = line.getCell(9);
+        line = sheet.getRow(30);
+        cell = line.getCell(14);
         cell.setCellValue(totalPh0.doubleValue());
+        
+        // Permet d'ajuster la taille de la cellule en fonction de son contenu
+        for (int i = 1; i <= 18; i++) {
+        	sheet.autoSizeColumn(i);
+        	if(sheet.getColumnWidth(i) < 256*15) {
+        		sheet.setColumnWidth(i, 256*15);
+        	}
+        }
     }
 
     public void writingResultDinucleotide(ArrayList<HashMap<String, BigInteger>> results) {
-        HashMap<String, BigInteger> Ph0Di = results.get(5);
-        HashMap<String, BigInteger> Ph1Di = results.get(6);
+        HashMap<String, BigInteger> Ph0Di = results.get(6);
+        HashMap<String, BigInteger> Ph1Di = results.get(7);
+        HashMap<String, BigInteger> PrefPh0Di = results.get(8);
+        HashMap<String, BigInteger> PrefPh1Di = results.get(9);
+        
+        int ligneCourante = 8;
 
-        int ligneCourante = 1;
-
-        @SuppressWarnings("unused")
         BigDecimal valeur, valeur2;
         BigInteger nbDinucleotide;
         BigDecimal pourcentage = new BigDecimal("0");
         BigDecimal totalPh0Di = new BigDecimal("0");
         BigDecimal totalPh1Di = new BigDecimal("0");
+        BigDecimal totalPh0DiPref = new BigDecimal("0");
+        BigDecimal totalPh1DiPref = new BigDecimal("0");
 
         // Manages the numbers
         for (int i = 0; i < 4; i++) {
@@ -359,6 +314,24 @@ public class ExcelController {
                         totalPh1Di = totalPh1Di.add(valeur);
                     }
                 }
+                
+                for (int g = 16; g < 18; g++) {
+                    cell = line.getCell(g);
+                    valeur2 = new BigDecimal(cell.toString());
+                    if (g == 7)  //Ph0
+                    {
+                        nbDinucleotide = PrefPh0Di.get(trinucleotideName);
+                        valeur2 = valeur2.add(new BigDecimal(nbDinucleotide));
+                        cell.setCellValue(valeur2.doubleValue());
+                        totalPh0DiPref = totalPh0DiPref.add(valeur2);
+                    } else if (g == 8) //Ph1
+                    {
+                    	nbDinucleotide = PrefPh1Di.get(trinucleotideName);
+                        valeur2 = valeur2.add(new BigDecimal(nbDinucleotide));
+                        cell.setCellValue(valeur2.doubleValue());
+                        totalPh1DiPref = totalPh1DiPref.add(valeur2);
+                    }
+                }
 
                 ligneCourante++;
             }
@@ -368,9 +341,11 @@ public class ExcelController {
 
         line.getCell(12).setCellValue(totalPh0Di.doubleValue());
         line.getCell(14).setCellValue(totalPh1Di.doubleValue());
+        line.getCell(16).setCellValue(totalPh0DiPref.doubleValue());
+        line.getCell(17).setCellValue(totalPh1DiPref.doubleValue());
 
         // Second step for the percentage
-        for (int i = 1; i < 17; i++) {
+        for (int i = 8; i < 25; i++) {
             line = sheet.getRow(i);
 
             for (int j = 13; j < 16; j = j + 2) {
@@ -388,19 +363,33 @@ public class ExcelController {
 
                 cell.setCellValue(pourcentage.doubleValue());
             }
-
+        }
+        
+        line = sheet.getRow(34);
+        cell = line.getCell(14);
+        cell.setCellValue(totalPh0Di.doubleValue());
+        
+        // Permet d'ajuster la taille de la cellule en fonction de son contenu
+        for (int i = 1; i <= 18; i++) {
+        	sheet.autoSizeColumn(i);
+        	if(sheet.getColumnWidth(i) < 256*15) {
+        		sheet.setColumnWidth(i, 256*15);
+        	}
         }
     }
 
     public void addingNbSeq(long nbSeq) {
-        line = sheet.getRow(0);
-        cell = line.getCell(9);
+        line = sheet.getRow(30);
+        cell = line.getCell(14);
         double totalSeq = Double.parseDouble(cell.toString()) + nbSeq;
         cell.setCellValue(totalSeq);
 
         // Permet d'ajuster la taille de la cellule en fonction de son contenu
-        for (int i = 1; i <= 9; i++) {
-            sheet.autoSizeColumn(i);
+        for (int i = 1; i <= 18; i++) {
+        	sheet.autoSizeColumn(i);
+        	if(sheet.getColumnWidth(i) < 256*15) {
+        		sheet.setColumnWidth(i, 256*15);
+        	}
         }
     }
 

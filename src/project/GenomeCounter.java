@@ -57,6 +57,9 @@ public class GenomeCounter extends Thread {
 
 		HashMap<String, BigInteger> Ph0Dinucleotide;
 		HashMap<String, BigInteger> Ph1Dinucleotide;
+		
+		HashMap<String, BigInteger> PrefPh0Dinucleotide;
+		HashMap<String, BigInteger> PrefPh1Dinucleotide;
 
 		HashMap<String, BigInteger> TempPh0Dinucleotide;
 		HashMap<String, BigInteger> TempPh1Dinucleotide;
@@ -69,6 +72,7 @@ public class GenomeCounter extends Thread {
 
 		TempPh0Dinucleotide = genererMapDinucleotide();
 		TempPh1Dinucleotide = genererMapDinucleotide();
+		
 
 		if (ancienneMap == null) {
 			Ph0 = genererMap();
@@ -79,15 +83,20 @@ public class GenomeCounter extends Thread {
 			PrefPh0 = genererMap();
 			PrefPh1 = genererMap();
 			PrefPh2 = genererMap();
+			PrefPh0Dinucleotide = genererMapDinucleotide();
+			PrefPh1Dinucleotide = genererMapDinucleotide();
 		} else {
 			Ph0 = ancienneMap.get(0);
 			Ph1 = ancienneMap.get(1);
 			Ph2 = ancienneMap.get(2);
-			Ph0Dinucleotide = ancienneMap.get(3);
-			Ph1Dinucleotide = ancienneMap.get(4);
-			PrefPh0 = ancienneMap.get(5);
-			PrefPh1 = ancienneMap.get(6);
-			PrefPh2 = ancienneMap.get(7);
+			PrefPh0 = ancienneMap.get(3);
+			PrefPh1 = ancienneMap.get(4);
+			PrefPh2 = ancienneMap.get(5);
+			
+			Ph0Dinucleotide = ancienneMap.get(6);
+			Ph1Dinucleotide = ancienneMap.get(7);
+			PrefPh0Dinucleotide = ancienneMap.get(8);
+			PrefPh1Dinucleotide = ancienneMap.get(9);
 		}
 
 		BigInteger nbTrinucleotide;
@@ -225,12 +234,15 @@ public class GenomeCounter extends Thread {
 		mapResultat.add(Ph1);
 		mapResultat.add(Ph2);
 
-		mapResultat.add(Ph0Dinucleotide);
-		mapResultat.add(Ph1Dinucleotide);
-
 		mapResultat.add(PrefPh0);
 		mapResultat.add(PrefPh1);
 		mapResultat.add(PrefPh2);
+		
+		mapResultat.add(Ph0Dinucleotide);
+		mapResultat.add(Ph1Dinucleotide);
+		
+		mapResultat.add(PrefPh0Dinucleotide);
+		mapResultat.add(PrefPh1Dinucleotide);
 
 		return mapResultat;
 	}
