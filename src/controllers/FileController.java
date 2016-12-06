@@ -188,7 +188,7 @@ public class FileController {
 			String fileName = "";
 			String sheetName = "";
 			// long nbSeq = 0;
-
+			
 			switch (location) {
 			case "subgroup":
 				fileName = dirName + "/Total_" + genome.getSubgroup() + ".xlsx";
@@ -200,7 +200,7 @@ public class FileController {
 				fileName = dirName + "/Total_" + genome.getKingdom() + ".xlsx";
 				break;
 			case "organisme":
-				fileName = dirName + "/" + genome.getName() + ".xlsx";
+				fileName = dirName + "" + genome.getName() + ".xlsx";
 				break;
 			default:
 				System.out.println("Error location : " + location + " for Genome : " + genome.getName());
@@ -222,6 +222,7 @@ public class FileController {
 
 			ExcelController excel;
 
+			System.out.println("FileName : " + fileName);
 			File fichier = new File(fileName);
 			File dossier = new File(fileName);
 

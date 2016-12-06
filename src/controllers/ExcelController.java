@@ -98,12 +98,15 @@ public class ExcelController {
 		ExcelController res = new ExcelController();
 
 		try {
-			// System.out.println("Test name newExcel : " + name);
-			res.wb = WorkbookFactory.create(new File("base.xlsx"));
-			res.name = name;
-			// res.saving();
-			res.saving();
-
+			if (name != null) {
+				// System.out.println("Test name newExcel : " + name);
+				res.wb = WorkbookFactory.create(new File("base.xlsx"));
+				res.name = name;
+				// res.saving();
+				res.saving();
+			} else {
+				System.out.println("Erreur newExcel, name null");
+			}
 			return res;
 		} catch (Exception e) {
 			System.out.println("Debug newExcel : " + e.getMessage() + " error : " + e.toString());
@@ -158,6 +161,7 @@ public class ExcelController {
 		HashMap<String, BigInteger> PrefPh0 = results.get(3);
 		HashMap<String, BigInteger> PrefPh1 = results.get(4);
 		HashMap<String, BigInteger> PrefPh2 = results.get(5);
+		HashMap<String, BigInteger> Informations = results.get(8);
 
 		int ligneCourante = 8;
 
@@ -170,6 +174,10 @@ public class ExcelController {
 		BigDecimal totalPrefPh0 = new BigDecimal("0");
 		BigDecimal totalPrefPh1 = new BigDecimal("0");
 		BigDecimal totalPrefPh2 = new BigDecimal("0");
+
+		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
+		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
+		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
 
 		for (String nomTrinucleotide : generateTriNucleotides()) {
 			line = sheet.getRow(ligneCourante);
@@ -264,6 +272,28 @@ public class ExcelController {
 
 		}
 
+		/*
+		 * Nb nucleotide line : 2, cell : 3
+		 */
+		line = sheet.getRow(2);
+		cell = line.getCell(3);
+		cell.setCellValue(Informations.get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
+
+		/*
+		 * Nb cds sequences line : 3, cell : 3
+		 */
+		line = sheet.getRow(3);
+		cell = line.getCell(3);
+		cell.setCellValue(Informations.get("nbCDS").doubleValue() + Informations.get("nbInvalideCDS").doubleValue()
+				+ nbCDS.doubleValue() + nbInvalideCDS.doubleValue());
+
+		/*
+		 * Nb invalid cds line : 4, cell : 3
+		 */
+		line = sheet.getRow(4);
+		cell = line.getCell(3);
+		cell.setCellValue(Informations.get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
+
 		// Writing nbBase
 		line = sheet.getRow(3);
 		cell = line.getCell(8);
@@ -281,6 +311,7 @@ public class ExcelController {
 	public void writingResultDinucleotide(ArrayList<HashMap<String, BigInteger>> results) {
 		HashMap<String, BigInteger> Ph0Di = results.get(6);
 		HashMap<String, BigInteger> Ph1Di = results.get(7);
+		HashMap<String, BigInteger> Informations = results.get(8);
 
 		int ligneCourante = 8;
 
@@ -289,6 +320,10 @@ public class ExcelController {
 		BigDecimal pourcentage = new BigDecimal("0");
 		BigDecimal totalPh0Di = new BigDecimal("0");
 		BigDecimal totalPh1Di = new BigDecimal("0");
+
+		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
+		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
+		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
 
 		// Manages the numbers
 		for (int i = 0; i < 4; i++) {
@@ -344,6 +379,28 @@ public class ExcelController {
 			}
 		}
 
+		/*
+		 * Nb nucleotide line : 2, cell : 3
+		 */
+		line = sheet.getRow(2);
+		cell = line.getCell(3);
+		cell.setCellValue(Informations.get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
+
+		/*
+		 * Nb cds sequences line : 3, cell : 3
+		 */
+		line = sheet.getRow(3);
+		cell = line.getCell(3);
+		cell.setCellValue(Informations.get("nbCDS").doubleValue() + Informations.get("nbInvalideCDS").doubleValue()
+				+ nbCDS.doubleValue() + nbInvalideCDS.doubleValue());
+
+		/*
+		 * Nb invalid cds line : 4, cell : 3
+		 */
+		line = sheet.getRow(4);
+		cell = line.getCell(3);
+		cell.setCellValue(Informations.get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
+
 		// Writing nbBases
 		line = sheet.getRow(3);
 		cell = line.getCell(11);
@@ -386,7 +443,8 @@ public class ExcelController {
 		 */
 		line = sheet.getRow(3);
 		cell = line.getCell(3);
-		cell.setCellValue(results.get(8).get("nbCDS").doubleValue() + results.get(8).get("nbInvalideCDS").doubleValue());
+		cell.setCellValue(
+				results.get(8).get("nbCDS").doubleValue() + results.get(8).get("nbInvalideCDS").doubleValue());
 
 		/*
 		 * Nb invalid cds line : 4, cell : 3
@@ -408,7 +466,7 @@ public class ExcelController {
 		cell = line.getCell(8);
 		double totalSeq = Double.parseDouble(cell.toString()) + nbSeq;
 		cell.setCellValue(totalSeq);
-		
+
 		line = sheet.getRow(2);
 		cell = line.getCell(11);
 		totalSeq = Double.parseDouble(cell.toString()) + nbSeq;
@@ -426,8 +484,12 @@ public class ExcelController {
 	public void saving() {
 		FileOutputStream output = null;
 		try {
-			output = new FileOutputStream(this.name);
-			this.wb.write(output);
+			if (this.name != null) {
+				output = new FileOutputStream(this.name);
+				this.wb.write(output);
+			} else {
+				System.out.println("Erreur ExcelController/saving - this.name=null");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

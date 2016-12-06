@@ -178,6 +178,7 @@ public class GenomeReader {
 		String group = "";
 		String subgroup = "";
 		String name = tabLigne[0];
+		//System.out.print("Test Name : " + name + "   ---- ");
 		String bioproject = "";
 
 		if (kingdom.equals("Eukaryotes")) {
@@ -195,12 +196,20 @@ public class GenomeReader {
 		}
 
 		// Suppression des caracteres interdits par un espace
-		String[] toRemove = { "*", "?", "<", ">", ":", "/", "\\", "\"" };
+		String[] toRemove = { "*", "?", "<", ">", ":", "/", "\\", "\"", "=", "," };
 		for (String c : toRemove) {
 			if (name.contains(c)) {
-				name = name.replace(c, " ").trim();
+				name = name.replaceAll(c, " ").trim();
+			}
+			if(group.contains(c)) {
+				group = group.replaceAll(c, " ").trim();
+			}
+			if(subgroup.contains(c)) {
+				subgroup = subgroup.replaceAll(c, " ").trim();
 			}
 		}
+		
+		//System.out.println("   ---- Test Name after removing : " + name + "   ---- ");
 
 		genome = new Genome(kingdom, group, subgroup, name, bioproject);
 
