@@ -417,6 +417,10 @@ public class ExcelController {
 
 	public void writingInformations(ArrayList<HashMap<String, BigInteger>> results, String name, String bioProject,
 			String date) {
+		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
+		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
+		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
+		
 		/*
 		 * Organisme Name line : 0, cell : 3
 		 */
@@ -436,22 +440,22 @@ public class ExcelController {
 		 */
 		line = sheet.getRow(2);
 		cell = line.getCell(3);
-		cell.setCellValue(results.get(8).get("nbNucleotide").doubleValue());
+		cell.setCellValue(results.get(8).get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
 
 		/*
 		 * Nb cds sequences line : 3, cell : 3
 		 */
 		line = sheet.getRow(3);
 		cell = line.getCell(3);
-		cell.setCellValue(
-				results.get(8).get("nbCDS").doubleValue() + results.get(8).get("nbInvalideCDS").doubleValue());
+		cell.setCellValue(results.get(8).get("nbCDS").doubleValue() + results.get(8).get("nbInvalideCDS").doubleValue()
+				+ nbCDS.doubleValue());
 
 		/*
 		 * Nb invalid cds line : 4, cell : 3
 		 */
 		line = sheet.getRow(4);
 		cell = line.getCell(3);
-		cell.setCellValue(results.get(8).get("nbInvalideCDS").doubleValue());
+		cell.setCellValue(results.get(8).get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
 
 		/*
 		 * Modification Date line : 5, cell : 3
