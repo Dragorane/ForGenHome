@@ -14,27 +14,25 @@ import utils.DownloadTool;
  * Used to run the project
  */
 
-public class MainLauncher 
-{
-	public static ArrayList<String> fichiersBioinfo ;
+public class MainLauncher {
+	public static ArrayList<String> fichiersBioinfo;
 
-   public static void main (String[] args) throws Exception
-   {
-	   	
+	public static void main(String[] args) throws Exception {
+
 		fichiersBioinfo = new ArrayList<String>();
-	   			
+
 		UIManager.setLookAndFeel(new MetalLookAndFeel());
-		
+
 		Interface bio = new Interface("Projet BioInformatique 2016 --- ForGenHome");
 		DownloadTool.setIHM(bio);
-		
+
 		bio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		bio.pack();
-		
-		bio.setSize(800,500);
-		
+
+		bio.setSize(800, 500);
+
 		bio.setVisible(true);
-	   
-   }
+
+	}
 }

@@ -44,6 +44,12 @@ public class Genome {
 	@Getter
 	@Setter
 	private long nbSeqPlasm;
+	@Getter
+	@Setter
+	private long nbSeqInvalid;
+	@Getter
+	@Setter
+	private long nbNucleotide;
 
 	private final String mainDir = "Results";
 
@@ -58,6 +64,8 @@ public class Genome {
 		this.nbSeqChloro = 0;
 		this.nbSeqMito = 0;
 		this.nbSeqPlasm = 0;
+		this.nbSeqInvalid = 0;
+		this.nbNucleotide = 0;
 	}
 
 	public String getKingdomChemin() {
@@ -190,12 +198,28 @@ public class Genome {
 		this.nbSeqPlasm = nbSeqPlasm;
 	}
 
+	public long getNbSeqInvalid() {
+		return nbSeqInvalid;
+	}
+
+	public void setNbSeqInvalid(long nbSeqInvalid) {
+		this.nbSeqInvalid = nbSeqInvalid;
+	}
+
 	public long getNbSeqTemp() {
 		return nbSeqTemp;
 	}
 
 	public void setNbSeqTemp(long nbSeqTemp) {
 		this.nbSeqTemp = nbSeqTemp;
+	}
+
+	public long getNbNucleotide() {
+		return nbNucleotide;
+	}
+
+	public void setNbNucleotide(long nbNucleotide) {
+		this.nbNucleotide = nbNucleotide;
 	}
 
 	@Override

@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -44,18 +44,18 @@ public class GenomeReader {
 
 	static Interface ihm_log = null;
 
-	//Temps moyen de téléchargement/maj d'un genome.
+	// Temps moyen de téléchargement/maj d'un genome.
 	private static double tpsMoyen = 0.0;
 	private static Date depart = new Date();
 	private static int nombreSequencesLues = 0;
 
 	// Liste des fichiers e telecharger
 
-	public static int getNombreSequencesLues() {
+	public int getNombreSequencesLues() {
 		return nombreSequencesLues;
 	}
 
-	public static void setNombreSequencesLues(int nombreSequencesLues) {
+	public void setNombreSequencesLues(int nombreSequencesLues) {
 		GenomeReader.nombreSequencesLues = nombreSequencesLues;
 	}
 
@@ -68,63 +68,59 @@ public class GenomeReader {
 	public static double getTpsMoyen() {
 		return tpsMoyen;
 	}
-/*
+	/*
 	 * Public functions
 	 */
 
-	//Modification du temps moyen
-	private void updateTpsMoyen () {
+	// Modification du temps moyen
+	private void updateTpsMoyen() {
 
 		Date now = new Date();
 		double temp;
 		double tpsPasse = now.getTime() - depart.getTime();
-		tpsPasse = tpsPasse/1000.0;
-		temp = tpsPasse/getNombreSequencesLues();
+		tpsPasse = tpsPasse / 1000.0;
+		temp = tpsPasse / getNombreSequencesLues();
 		setTpsMoyen(temp);
 
-
-
-
-/* nbSeqLues éléments faits en tpsPasse secondes
-*  m éléments à faire en x secondes
-*  produit en croix : x=m*s/n
-*  ici on calcul s/n, le m est utilisé après
-*  *files away*
-* */
+		/*
+		 * nbSeqLues éléments faits en tpsPasse secondes m éléments à faire
+		 * en x secondes produit en croix : x=m*s/n ici on calcul s/n, le m est
+		 * utilisé après *files away*
+		 */
 	}
 
 	// S'occupe de l'affichage de la progressBar
 	private void afficheProgressBar() {
-		int value = ihm_log.progress_bar.getValue()+1;
-		ihm_log.progress_bar.setValue(value+1);
+		int value = ihm_log.progress_bar.getValue() + 1;
+		ihm_log.progress_bar.setValue(value + 1);
 		int max = ihm_log.progress_bar.getMaximum();
 		String affichage = "";
 		// Ici calcul du m*s/n
-		double temps = getTpsMoyen()*(max-value);
+		double temps = getTpsMoyen() * (max - value);
 		int tempsint = (int) temps;
-		int secondes = tempsint % 60 ;
-		int minutes = ((int) (tempsint/60)) % 60;
-		int heures   = ((int) (tempsint / 3600)) %24;
-		int jours = (int) (tempsint/(3600*24));
+		int secondes = tempsint % 60;
+		int minutes = ((int) (tempsint / 60)) % 60;
+		int heures = ((int) (tempsint / 3600)) % 24;
+		int jours = (int) (tempsint / (3600 * 24));
 
-		if (tpsMoyen != 0 && getNombreSequencesLues() > 1){
+		if (tpsMoyen != 0 && getNombreSequencesLues() > 1) {
 			affichage = value + " / " + max + " ||| Temps restant : ";
-			if ( jours != 0 ){
-				affichage = affichage + jours+ " j ";
+			if (jours != 0) {
+				affichage = affichage + jours + " j ";
 			}
-			if ( heures != 0 ){
-				affichage = affichage + heures+ " h ";
+			if (heures != 0) {
+				affichage = affichage + heures + " h ";
 			}
-			if ( minutes != 0 ){
-				affichage = affichage + minutes +" min ";
+			if (minutes != 0) {
+				affichage = affichage + minutes + " min ";
 			}
-			if ( secondes != 0 ){
-				affichage = affichage + secondes +" s.";
+			if (secondes != 0) {
+				affichage = affichage + secondes + " s.";
 			}
 		} else {
 			affichage = value + " / " + max + " Calcul du temps restant en cours...";
 		}
-		ihm_log.progress_bar.setString( affichage );
+		ihm_log.progress_bar.setString(affichage);
 	}
 
 	// Getting different files on the ncbi's website
@@ -156,7 +152,7 @@ public class GenomeReader {
 
 	// Getting a genome (from the file we downloaded)
 	public Genome get(StateController etat) throws FileNotFoundException {
-		updateTpsMoyen ();
+		updateTpsMoyen();
 		afficheProgressBar();
 		Genome genome;
 
@@ -232,12 +228,12 @@ public class GenomeReader {
 							genome.getRefseq().add(res);
 						}
 					}
-					updateTpsMoyen ();
+					updateTpsMoyen();
 					afficheProgressBar();
 
 				} else {
 					ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-					updateTpsMoyen ();
+					updateTpsMoyen();
 					afficheProgressBar();
 					ihm_log.addLog("");
 					// System.out.println(ihm_log.progress_bar.getValue());
@@ -249,7 +245,7 @@ public class GenomeReader {
 
 		// Eukaryotes
 		else if (genome.getKingdom().equals("Eukaryotes")) {
-			updateTpsMoyen ();
+			updateTpsMoyen();
 			afficheProgressBar();
 
 			genome.setUpdateDate(tabLigne[15]);
@@ -260,7 +256,7 @@ public class GenomeReader {
 				}
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-				updateTpsMoyen ();
+				updateTpsMoyen();
 				afficheProgressBar();
 				ihm_log.addLog("");
 			}
@@ -272,12 +268,12 @@ public class GenomeReader {
 			genome.setUpdateDate(tabLigne[11]);
 			if (!isUptoDate(genome)) {
 				recupererRefSeqVir(genome, 1);
-				updateTpsMoyen ();
+				updateTpsMoyen();
 				afficheProgressBar();
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
 				ihm_log.addLog("");
-				updateTpsMoyen ();
+				updateTpsMoyen();
 				afficheProgressBar();
 			}
 		}
@@ -422,7 +418,8 @@ public class GenomeReader {
 		try {
 			if (genome != null && genome.getGcf() != null) {
 				Connection co = Jsoup.connect(LINK_ASSEMBLY + genome.getGcf()).timeout(60000);
-				System.out.println("TEST RefSeq : " + LINK_ASSEMBLY + genome.getGcf());
+				// System.out.println("TEST RefSeq : " + LINK_ASSEMBLY +
+				// genome.getGcf());
 				Document doc = co.get();
 
 				Element asm = doc.getElementById("asm_Primary_Assembly");
@@ -485,7 +482,7 @@ public class GenomeReader {
 
 	// Parsing bioproject's page of viruses to get refseqs
 	private void recupererRefSeqVir(Genome genome, int nbRelance) {
-		System.out.println(genome.getBioproject());
+		// System.out.println("BioProject : "+genome.getBioproject());
 		try {
 			if (genome != null && genome.getBioproject() != null) {
 				Document doc = Jsoup.connect("http://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject())
@@ -502,7 +499,7 @@ public class GenomeReader {
 							genome.getRefseq().add(res);
 						} else if (linkHref.startsWith("/nuccore/")) {
 							try {
-								System.out.println(linkHref);
+								// System.out.println("Link Href : "+linkHref);
 								Document doc2 = Jsoup.connect("http://www.ncbi.nlm.nih.gov" + linkHref).timeout(60000)
 										.get();
 
@@ -517,7 +514,7 @@ public class GenomeReader {
 											if (tmpString3.startsWith("NCBI Reference Sequence")) {
 												String[] res3 = tmpString3.split(": ");
 												String refseq = res3[res3.length - 1];
-												System.out.println("refseq : " + refseq);
+												//System.out.println("refseq : " + refseq);
 												String[] res = { refseq, "chrom" };
 												genome.getRefseq().add(res);
 												// ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
@@ -536,7 +533,8 @@ public class GenomeReader {
 											if (linkHref2.startsWith("/nuccore/NC")) {
 												String tmpString = e2.attr("href");
 												String refseq = tmpString.split("/")[tmpString.split("/").length - 1];
-												System.out.println("refseq : " + refseq);
+												// System.out.println("refseq :
+												// " + refseq);
 												String[] res = { refseq, "chrom" };
 												// ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
 												genome.getRefseq().add(res);

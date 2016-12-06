@@ -42,7 +42,7 @@ public class GenomeCounter extends Thread {
 
 	// Ajoute les resultats a la HashMap de resultat
 	public static ArrayList<HashMap<String, BigInteger>> ajoutResultats(Genome genome, String sequence, String type,
-																		ArrayList<HashMap<String, BigInteger>> ancienneMap) {
+			ArrayList<HashMap<String, BigInteger>> ancienneMap) {
 		HashMap<String, BigInteger> Ph0;
 		HashMap<String, BigInteger> Ph1;
 		HashMap<String, BigInteger> Ph2;
@@ -57,12 +57,11 @@ public class GenomeCounter extends Thread {
 
 		HashMap<String, BigInteger> Ph0Dinucleotide;
 		HashMap<String, BigInteger> Ph1Dinucleotide;
-		
-		HashMap<String, BigInteger> PrefPh0Dinucleotide;
-		HashMap<String, BigInteger> PrefPh1Dinucleotide;
 
 		HashMap<String, BigInteger> TempPh0Dinucleotide;
 		HashMap<String, BigInteger> TempPh1Dinucleotide;
+		
+		HashMap<String, BigInteger> Informations;
 
 		ArrayList<HashMap<String, BigInteger>> mapResultat = new ArrayList<HashMap<String, BigInteger>>();
 
@@ -72,7 +71,6 @@ public class GenomeCounter extends Thread {
 
 		TempPh0Dinucleotide = genererMapDinucleotide();
 		TempPh1Dinucleotide = genererMapDinucleotide();
-		
 
 		if (ancienneMap == null) {
 			Ph0 = genererMap();
@@ -83,8 +81,7 @@ public class GenomeCounter extends Thread {
 			PrefPh0 = genererMap();
 			PrefPh1 = genererMap();
 			PrefPh2 = genererMap();
-			PrefPh0Dinucleotide = genererMapDinucleotide();
-			PrefPh1Dinucleotide = genererMapDinucleotide();
+			Informations = genererMapInformation();
 		} else {
 			Ph0 = ancienneMap.get(0);
 			Ph1 = ancienneMap.get(1);
@@ -92,11 +89,11 @@ public class GenomeCounter extends Thread {
 			PrefPh0 = ancienneMap.get(3);
 			PrefPh1 = ancienneMap.get(4);
 			PrefPh2 = ancienneMap.get(5);
-			
+
 			Ph0Dinucleotide = ancienneMap.get(6);
 			Ph1Dinucleotide = ancienneMap.get(7);
-			PrefPh0Dinucleotide = ancienneMap.get(8);
-			PrefPh1Dinucleotide = ancienneMap.get(9);
+			
+			Informations = ancienneMap.get(8);
 		}
 
 		BigInteger nbTrinucleotide;
@@ -106,7 +103,18 @@ public class GenomeCounter extends Thread {
 		BigInteger nbDinucleotide;
 		BigInteger prefDinucleotide;
 
+		BigInteger nbCDS;
+		BigInteger nbInvalideCDS;
+		BigInteger nbNucleotide;
+		BigInteger nbCDSDinucleotide;
+		
 		if (verifSequence(sequence)) {
+			nbCDS = Informations.get("nbCDS");
+			Informations.put("nbCDS", nbCDS.add(BigInteger.ONE));
+			
+			nbNucleotide = Informations.get("nbNucleotide");
+			Informations.put("nbNucleotide", nbNucleotide.add(BigInteger.valueOf(sequence.length())));
+			
 			if (type.equals("chrom")) {
 				genome.setNbSeqChrom(genome.getNbSeqChrom() + 1);
 			} else if (type.equals("chloro")) {
@@ -156,8 +164,11 @@ public class GenomeCounter extends Thread {
 
 			ph = 0;
 
-			// SI sequence est modulo 3 (test� ult�rieurement) et PAIR
+			// SI sequence est modulo 3 (teste ulterieurement) et PAIR
 			if (sequence.length() % 2 == 0) {
+				nbCDSDinucleotide = Informations.get("nbCDSDinucleotide");
+				Informations.put("nbCDSDinucleotide", nbCDSDinucleotide.add(BigInteger.ONE));
+				
 				for (int i = 0; i < sequence.length() - 4; i++) {
 					dinucleotide = null;
 					dinucleotide = sequence.charAt(i) + "" + sequence.charAt(i + 1);
@@ -213,8 +224,10 @@ public class GenomeCounter extends Thread {
 				}
 			}
 
-			for(@SuppressWarnings("rawtypes") Map.Entry mapentry : TempPh0.entrySet()) {
-				ArrayList<Integer> maxtab = maxPh(TempPh0.get(mapentry.getKey()), TempPh1.get(mapentry.getKey()), TempPh2.get(mapentry.getKey()));
+			for (@SuppressWarnings("rawtypes")
+			Map.Entry mapentry : TempPh0.entrySet()) {
+				ArrayList<Integer> maxtab = maxPh(TempPh0.get(mapentry.getKey()), TempPh1.get(mapentry.getKey()),
+						TempPh2.get(mapentry.getKey()));
 				for (Integer w : maxtab) {
 					if (w == 0) {
 						BigInteger bg = PrefPh0.get(mapentry.getKey());
@@ -228,6 +241,10 @@ public class GenomeCounter extends Thread {
 					}
 				}
 			}
+		} // SEQUENCE NON CONFORME
+		else {			
+			nbInvalideCDS = Informations.get("nbInvalideCDS");
+			Informations.put("nbInvalideCDS", nbInvalideCDS.add(BigInteger.ONE));
 		}
 
 		mapResultat.add(Ph0);
@@ -237,12 +254,11 @@ public class GenomeCounter extends Thread {
 		mapResultat.add(PrefPh0);
 		mapResultat.add(PrefPh1);
 		mapResultat.add(PrefPh2);
-		
+
 		mapResultat.add(Ph0Dinucleotide);
 		mapResultat.add(Ph1Dinucleotide);
 		
-		mapResultat.add(PrefPh0Dinucleotide);
-		mapResultat.add(PrefPh1Dinucleotide);
+		mapResultat.add(Informations);
 
 		return mapResultat;
 	}
@@ -296,13 +312,12 @@ public class GenomeCounter extends Thread {
 				if (!genome.exists() && genome.getRefseq().size() != 0) {
 					ihm_log.addLog("\n--- Nouvel organisme : " + genome + "---");
 					ihm_log.addLog("Contenu dans " + etat.getNomFichier() + " [ " + (etat.getLineNumber() + 1) + " ]");
-					getGenome.setNombreSequencesLues(getGenome.getNombreSequencesLues()+1);
+					getGenome.setNombreSequencesLues(getGenome.getNombreSequencesLues() + 1);
 					while (!etat.toutRecuperer(genome.getRefseq().size())) {
 						// On recupere la refseq et son type
 						String[] ref_type = genome.getRefseq().get(etat.getRefSeqNumber());
 						String refseq = ref_type[0];
 						String type = ref_type[1];
-
 
 						// On recupere la sequence et les infos (genes) associes
 						sequence_info = getGenome.getSequence(genome, refseq, optionSequence, file);
@@ -331,11 +346,13 @@ public class GenomeCounter extends Thread {
 								resultatsMito = ajoutResultats(genome, sequence, type, resultatsMito);
 							}
 
-							// Calcul de la hashMap Resultat de la s�quence en cours
+							// Calcul de la hashMap Resultat de la sequence en
+							// cours
 							resultatsSequenceTemp = ajoutResultats(genome, sequence, type, resultatsSequenceTemp);
 						}
 
-						// Sauvegarder la HashMap de resultat d'un fichier du genome
+						// Sauvegarder la HashMap de resultat d'un fichier du
+						// genome
 						FileController.savingOngletResults(genome, type, resultatsSequenceTemp, typeName + refseq);
 						resultatsSequenceTemp.clear();
 
@@ -368,7 +385,6 @@ public class GenomeCounter extends Thread {
 
 	}
 
-	@SuppressWarnings("unused")
 	private static ArrayList<Integer> maxPh(BigInteger ph0, BigInteger ph1, BigInteger ph2) {
 		ArrayList<Integer> res = new ArrayList<Integer>();
 		if (ph0.intValue() == 0 && ph1.intValue() == 0 && ph2.intValue() == 0) {
@@ -426,6 +442,15 @@ public class GenomeCounter extends Thread {
 				res.put(dinucleatide, new BigInteger("0"));
 			}
 		}
+		return res;
+	}
+	
+	private static HashMap<String, BigInteger> genererMapInformation() {
+		HashMap<String, BigInteger> res = new HashMap<String, BigInteger>();
+		res.put("nbNucleotide", new BigInteger("0"));
+		res.put("nbCDS", new BigInteger("0"));
+		res.put("nbInvalideCDS", new BigInteger("0"));
+		res.put("nbCDSDinucleotide", new BigInteger("0"));
 		return res;
 	}
 

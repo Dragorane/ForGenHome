@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -185,7 +187,7 @@ public class FileController {
 		try {
 			String fileName = "";
 			String sheetName = "";
-			long nbSeq = 0;
+			// long nbSeq = 0;
 
 			switch (location) {
 			case "subgroup":
@@ -206,16 +208,16 @@ public class FileController {
 
 			if (type.equals("chrom")) {
 				sheetName = "Sum_Chromosome";
-				nbSeq = genome.getNbSeqChrom();
+				// nbSeq = genome.getNbSeqChrom();
 			} else if (type.equals("plasm")) {
 				sheetName = "Sum_Plasmids";
-				nbSeq = genome.getNbSeqPlasm();
+				// nbSeq = genome.getNbSeqPlasm();
 			} else if (type.equals("chloro")) {
 				sheetName = "Sum_Chloroplast";
-				nbSeq = genome.getNbSeqChloro();
+				// nbSeq = genome.getNbSeqChloro();
 			} else if (type.equals("mito")) {
 				sheetName = "Sum_Mitochondrion";
-				nbSeq = genome.getNbSeqMito();
+				// nbSeq = genome.getNbSeqMito();
 			}
 
 			ExcelController excel;
@@ -227,23 +229,45 @@ public class FileController {
 				bewFile(dirName);
 			}
 
-
 			if (fichier.exists()) {
-				System.out.println("File exist !! : " + fileName);
+				// System.out.println("File exist !! : " + fileName);
 				excel = ExcelController.openingExistingFile(fileName, sheetName);
 			} else {
-				System.out.println("New Excel !! : " + fileName);
+				// System.out.println("New Excel !! : " + fileName);
 				excel = ExcelController.newExcel(fileName, sheetName);
 			}
 
-			System.out.println("Debug excel name : " + excel.name);
+			// System.out.println("Debug excel name : " + excel.name);
 
 			if (resultats != null) {
 				excel.writingResults(resultats);
 				excel.writingResultDinucleotide(resultats);
+
+				Date today = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+				switch (location) {
+				case "subgroup":
+					excel.writingInformations(resultats, "Total " + genome.getSubgroup(), "", sdf.format(today));
+					break;
+				case "group":
+					excel.writingInformations(resultats, "Total " + genome.getGroup(), "", sdf.format(today));
+					break;
+				case "kingdom":
+					excel.writingInformations(resultats, "Total " + genome.getKingdom(), "", sdf.format(today));
+					break;
+				case "organisme":
+					excel.writingInformations(resultats, genome.getName(), genome.getBioproject(),
+							genome.getUpdateDate());
+					break;
+				default:
+					System.out.println("Error location : " + location + " for Genome : " + genome.getName());
+				}
+				
+				excel.addingNbSeq(resultats.get(8).get("nbCDS").doubleValue(),
+						resultats.get(8).get("nbCDSDinucleotide").doubleValue());
 			}
 
-			excel.addingNbSeq(nbSeq);
+			// excel.addingNbSeq(nbSeq);
 
 			excel.saving();
 		} catch (Exception e) {
@@ -252,12 +276,13 @@ public class FileController {
 		}
 	}
 
-	// Deuxi�me fonction pour ajouter les onglets sp�cifiques aux s�quences
+	// Deuxi�me fonction pour ajouter les onglets sp�cifiques aux
+	// s�quences
 	public static void writingExcel(String dirName, Genome genome, String type,
 			ArrayList<HashMap<String, BigInteger>> resultats, String location, String newSheetName) {
 		try {
 			String fileName = "";
-			long nbSeq = 0;
+			// long nbSeq = 0;
 
 			switch (location) {
 			case "subgroup":
@@ -286,28 +311,32 @@ public class FileController {
 			}
 
 			if (fichier.exists()) {
-				System.out.println("File exist !! : " + fileName);
+				// System.out.println("File exist !! : " + fileName);
 				excel = ExcelController.openingExistingFile(fileName);
 				excel.createNewSheetInExcel(newSheetName);
 				excel.selectSheetFromExcel(newSheetName);
-				System.out.println("Debug excel : " + excel.toString());
+				// System.out.println("Debug excel : " + excel.toString());
 			} else {
-				System.out.println("New Excel !! : " + fileName);
+				// System.out.println("New Excel !! : " + fileName);
 				excel = ExcelController.newExcel(fileName);
 				excel.createNewSheetInExcel(newSheetName);
 				excel.selectSheetFromExcel(newSheetName);
-				System.out.println("Debug excel : " + excel.toString());
+				// System.out.println("Debug excel : " + excel.toString());
 			}
 
-			System.out.println("Debug excel name : " + excel.name);
-			System.out.println("Debug excel sheet name : " + excel.sheet.getSheetName());
+			// System.out.println("Debug excel name : " + excel.name);
+			// System.out.println("Debug excel sheet name : " +
+			// excel.sheet.getSheetName());
 
 			if (resultats != null) {
 				excel.writingResults(resultats);
 				excel.writingResultDinucleotide(resultats);
+				excel.writingInformations(resultats, newSheetName, genome.getBioproject(), genome.getUpdateDate());
 			}
 
-			excel.addingNbSeq(nbSeq);
+			excel.addingNbSeq(resultats.get(8).get("nbCDS").doubleValue(),
+					resultats.get(8).get("nbCDSDinucleotide").doubleValue());
+			// excel.addingNbSeq(nbSeq);
 
 			excel.saving();
 		} catch (Exception e) {
@@ -335,7 +364,7 @@ public class FileController {
 
 	public static void createUpdateFile2(String string, Genome genome) {
 		Path p = Paths.get(string);
-		System.out.println("Test createUpdateFile2 : " + p.toString());
+		// System.out.println("Test createUpdateFile2 : " + p.toString());
 		if (java.nio.file.Files.exists(p)) {
 			try {
 				FileWriter fichier;
