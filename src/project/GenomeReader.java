@@ -91,8 +91,7 @@ public class GenomeReader {
 
 	// S'occupe de l'affichage de la progressBar
 	private void afficheProgressBar() {
-		int value = ihm_log.progress_bar.getValue() + 1;
-		ihm_log.progress_bar.setValue(value + 1);
+		int value = ihm_log.progress_bar.getValue();
 		int max = ihm_log.progress_bar.getMaximum();
 		String affichage = "";
 		// Ici calcul du m*s/n
@@ -139,10 +138,46 @@ public class GenomeReader {
 				if (tmpFile.getName().equals("prokaryotes.txt")) {
 					// System.out.println("Test prokaryotes");
 					DownloadTool.getFile(LINK_LIST_PROK, "prokaryotes.txt", 1);
+					
+					//Regarder combien de ligne dans le fichier pour ajouter ce nombre a la progress_barre
+					File f = new File("prokaryotes.txt");
+					int nbGenome = 0;
+					if(f.exists()) {
+						BufferedReader br = new BufferedReader(new FileReader(f));
+						while ((br.readLine()) != null) {
+							nbGenome++;
+						}
+						br.close();
+						ihm_log.progress_bar.setMaximum(ihm_log.progress_bar.getMaximum() + nbGenome);
+					}
 				} else if (tmpFile.getName().equals("eukaryotes.txt")) {
 					DownloadTool.getFile(LINK_LIST_EUKA, "eukaryotes.txt", 1);
+					
+					//Regarder combien de ligne dans le fichier pour ajouter ce nombre a la progress_barre
+					File f = new File("eukaryotes.txt");
+					int nbGenome = 0;
+					if(f.exists()) {
+						BufferedReader br = new BufferedReader(new FileReader(f));
+						while ((br.readLine()) != null) {
+							nbGenome++;
+						}
+						br.close();
+						ihm_log.progress_bar.setMaximum(ihm_log.progress_bar.getMaximum() + nbGenome);
+					}
 				} else if (tmpFile.getName().equals("viruses.txt")) {
 					DownloadTool.getFile(LINK_LIST_VIRUSES, "viruses.txt", 1);
+					
+					//Regarder combien de ligne dans le fichier pour ajouter ce nombre a la progress_barre
+					File f = new File("viruses.txt");
+					int nbGenome = 0;
+					if(f.exists()) {
+						BufferedReader br = new BufferedReader(new FileReader(f));
+						while ((br.readLine()) != null) {
+							nbGenome++;
+						}
+						br.close();
+						ihm_log.progress_bar.setMaximum(ihm_log.progress_bar.getMaximum() + nbGenome);
+					}
 				}
 			}
 		} catch (Exception ex) {
@@ -152,8 +187,6 @@ public class GenomeReader {
 
 	// Getting a genome (from the file we downloaded)
 	public Genome get(StateController etat) throws FileNotFoundException {
-		updateTpsMoyen();
-		afficheProgressBar();
 		Genome genome;
 
 		// System.out.println("Test etat getNomFichier : " +
@@ -240,13 +273,9 @@ public class GenomeReader {
 							genome.getRefseq().add(res);
 						}
 					}
-					updateTpsMoyen();
-					afficheProgressBar();
 
 				} else {
 					ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-					updateTpsMoyen();
-					afficheProgressBar();
 					ihm_log.addLog("");
 					// System.out.println(ihm_log.progress_bar.getValue());
 				}
@@ -257,8 +286,6 @@ public class GenomeReader {
 
 		// Eukaryotes
 		else if (genome.getKingdom().equals("Eukaryotes")) {
-			updateTpsMoyen();
-			afficheProgressBar();
 
 			genome.setUpdateDate(tabLigne[15]);
 			if (!tabLigne[14].equals("Contig") && !tabLigne[14].equals("Scaffold") && !isUptoDate(genome)) {
@@ -268,8 +295,6 @@ public class GenomeReader {
 				}
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-				updateTpsMoyen();
-				afficheProgressBar();
 				ihm_log.addLog("");
 			}
 		}
@@ -280,18 +305,17 @@ public class GenomeReader {
 			genome.setUpdateDate(tabLigne[11]);
 			if (!isUptoDate(genome)) {
 				recupererRefSeqVir(genome, 1);
-				updateTpsMoyen();
-				afficheProgressBar();
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
 				ihm_log.addLog("");
-				updateTpsMoyen();
-				afficheProgressBar();
 			}
 		}
 		fichier = null;
 		sc.close();
 
+		updateTpsMoyen();
+		afficheProgressBar();
+		
 		return genome;
 	}
 

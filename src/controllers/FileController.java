@@ -27,8 +27,8 @@ public class FileController {
 	static boolean kingdomInUse = false;
 
 	// Cleaning all excel files
-	public static void cleaning() {
-		File etat = new File("/Data/state.txt");
+	public static void cleaning(String nameKingdom) {
+		File etat = new File("state_"+nameKingdom+".txt");
 
 		if (etat.exists()) {
 			etat.delete();

@@ -376,7 +376,9 @@ public class GenomeCounter extends Thread {
 				}
 				etat.increLine();
 				FileController.enregistrer(etat, file);
-
+				
+				//FIN D'UN GENOME - BARRE DE PROGRESSION EVOLUE ICI !
+				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

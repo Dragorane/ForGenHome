@@ -30,20 +30,22 @@ public class InterfaceListener implements ActionListener {
 			t = new Thread() {
 				public void run() {
 					if (ihm.check_eukaryotes.isSelected()) {
-						ihm.progress_bar.setMaximum(ihm.progress_bar.getMaximum() + 2600);
 						MainLauncher.fichiersBioinfo.add("eukaryotes.txt");
+						FileController.cleaning("eukaryotes");
 					}
 
 					if (ihm.check_prokaryotes.isSelected()) {
 						ihm.progress_bar.setMaximum(ihm.progress_bar.getMaximum() + 56300);
 						MainLauncher.fichiersBioinfo.add("prokaryotes.txt");
+						FileController.cleaning("prokaryotes");
 					}
 
 					if (ihm.check_viruses.isSelected()) {
 						ihm.progress_bar.setMaximum(ihm.progress_bar.getMaximum() + 5100);
 						MainLauncher.fichiersBioinfo.add("viruses.txt");
+						FileController.cleaning("viruses");
 					}
-					FileController.cleaning();
+					
 
 					for (String f : MainLauncher.fichiersBioinfo) {
 						// System.out.println("Test fichier f : " + f);

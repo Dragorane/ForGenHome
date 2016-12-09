@@ -45,7 +45,7 @@ public class StateController {
 
 	// On verifie si un etat a ete sauvegarde (fichier etat.txt)
 	public static StateController checkState(String file) {
-		File sauvegarde = new File("/Data/state_" + file);
+		File sauvegarde = new File("state_" + file);
 		// System.out.println("Test file StateController : " +
 		// sauvegarde.getName() + " test exists : " + sauvegarde.exists());
 		StateController etat;

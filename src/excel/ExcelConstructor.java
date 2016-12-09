@@ -81,6 +81,9 @@ public class ExcelConstructor {
 		XSSFFont fontTitle = (XSSFFont) this.wb.createFont();
 		fontTitle.setBold(true);
 		fontTitle.setColor(new XSSFColor(Color.WHITE));
+		
+		XSSFFont fontBold = (XSSFFont) this.wb.createFont();
+		fontBold.setBold(true);
 
 		// Style
 		XSSFCellStyle styleDefaultCell = (XSSFCellStyle) this.wb.createCellStyle();
@@ -93,6 +96,35 @@ public class ExcelConstructor {
 		styleDefaultCell.setRightBorderColor(new XSSFColor(new Color(149, 179, 215)));
 		styleDefaultCell.setBorderTop(BorderStyle.THIN);
 		styleDefaultCell.setTopBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		
+		//NumberStyleCell 1
+		XSSFCellStyle styleNumberFormatCell = (XSSFCellStyle) this.wb.createCellStyle();
+		styleNumberFormatCell.setAlignment(HorizontalAlignment.CENTER);
+		styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+		styleNumberFormatCell.setBorderBottom(BorderStyle.THIN);
+		styleNumberFormatCell.setBottomBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell.setBorderLeft(BorderStyle.THIN);
+		styleNumberFormatCell.setLeftBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell.setBorderRight(BorderStyle.THIN);
+		styleNumberFormatCell.setRightBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell.setBorderTop(BorderStyle.THIN);
+		styleNumberFormatCell.setTopBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell.setFont(fontBold);
+		//NumberStyleCell2
+		XSSFCellStyle styleNumberFormatCell2 = (XSSFCellStyle) this.wb.createCellStyle();
+		styleNumberFormatCell2.setAlignment(HorizontalAlignment.CENTER);
+		styleNumberFormatCell2.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+		styleNumberFormatCell2.setFillForegroundColor(new XSSFColor(new Color(220, 230, 241)));
+		styleNumberFormatCell2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		styleNumberFormatCell2.setBorderBottom(BorderStyle.THIN);
+		styleNumberFormatCell2.setBottomBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell2.setBorderLeft(BorderStyle.THIN);
+		styleNumberFormatCell2.setLeftBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell2.setBorderRight(BorderStyle.THIN);
+		styleNumberFormatCell2.setRightBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell2.setBorderTop(BorderStyle.THIN);
+		styleNumberFormatCell2.setTopBorderColor(new XSSFColor(new Color(149, 179, 215)));
+		styleNumberFormatCell2.setFont(fontBold);
 
 		XSSFCellStyle styleTitleCell = (XSSFCellStyle) this.wb.createCellStyle();
 		styleTitleCell.setAlignment(HorizontalAlignment.CENTER);
@@ -126,12 +158,8 @@ public class ExcelConstructor {
 			CellRangeAddress cda = new CellRangeAddress(q, q, 3, 5);
 			mySheet.addMergedRegion(cda);
 			mySheet.createRow(q).createCell(3);
-			if (q >= 2 && q <= 4) {
-				mySheet.getRow(q).getCell(3).setCellValue(0);
-			} else {
-				mySheet.getRow(q).getCell(3).setCellValue("");
-			}
-			if (q % 2 != 0) {
+
+			if (q % 2 == 0) {
 				mySheet.getRow(q).getCell(3).setCellStyle(styleInformationCell);
 				mySheet.getRow(q).createCell(4).setCellStyle(styleInformationCell);
 				mySheet.getRow(q).createCell(5).setCellStyle(styleInformationCell);
@@ -139,6 +167,21 @@ public class ExcelConstructor {
 				mySheet.getRow(q).getCell(3).setCellStyle(styleDefaultCell);
 				mySheet.getRow(q).createCell(4).setCellStyle(styleDefaultCell);
 				mySheet.getRow(q).createCell(5).setCellStyle(styleDefaultCell);
+			}
+			
+			if (q >= 2 && q <= 4) {
+				if(q % 2 == 0) {
+					mySheet.getRow(q).getCell(3).setCellStyle(styleNumberFormatCell2);
+					mySheet.getRow(q).createCell(4).setCellStyle(styleNumberFormatCell2);
+					mySheet.getRow(q).createCell(5).setCellStyle(styleNumberFormatCell2);
+				} else {
+					mySheet.getRow(q).getCell(3).setCellStyle(styleNumberFormatCell);
+					mySheet.getRow(q).createCell(4).setCellStyle(styleNumberFormatCell);
+					mySheet.getRow(q).createCell(5).setCellStyle(styleNumberFormatCell);
+				}
+				mySheet.getRow(q).getCell(3).setCellValue(0);
+			} else {
+				mySheet.getRow(q).getCell(3).setCellValue("");
 			}
 
 			RegionUtil.setBorderBottom(mySheet.getRow(q).getCell(3).getCellStyle().getBorderBottomEnum(), cda,
@@ -193,15 +236,15 @@ public class ExcelConstructor {
 					break;
 				case 2: 
 					mySheet.getRow(j).getCell(7).setCellValue("Nb Sequences");
-					mySheet.getRow(j).getCell(7).setCellStyle(styleInformationCell);
+					mySheet.getRow(j).getCell(7).setCellStyle(styleNumberFormatCell2);
 					mySheet.getRow(j).getCell(8).setCellValue(0);
-					mySheet.getRow(j).getCell(8).setCellStyle(styleInformationCell);
+					mySheet.getRow(j).getCell(8).setCellStyle(styleNumberFormatCell2);
 					break;
 				case 3: 
 					mySheet.getRow(j).getCell(7).setCellValue("Nb Bases");
-					mySheet.getRow(j).getCell(7).setCellStyle(styleDefaultCell);
+					mySheet.getRow(j).getCell(7).setCellStyle(styleNumberFormatCell);
 					mySheet.getRow(j).getCell(8).setCellValue(0);
-					mySheet.getRow(j).getCell(8).setCellStyle(styleDefaultCell);
+					mySheet.getRow(j).getCell(8).setCellStyle(styleNumberFormatCell);
 					break;
 			}
 		}
@@ -232,15 +275,15 @@ public class ExcelConstructor {
 					break;
 				case 2: 
 					mySheet.getRow(j).getCell(10).setCellValue("Nb Sequences");
-					mySheet.getRow(j).getCell(10).setCellStyle(styleInformationCell);
+					mySheet.getRow(j).getCell(10).setCellStyle(styleNumberFormatCell2);
 					mySheet.getRow(j).getCell(11).setCellValue(0);
-					mySheet.getRow(j).getCell(11).setCellStyle(styleInformationCell);
+					mySheet.getRow(j).getCell(11).setCellStyle(styleNumberFormatCell2);
 					break;
 				case 3: 
 					mySheet.getRow(j).getCell(10).setCellValue("Nb Bases");
-					mySheet.getRow(j).getCell(10).setCellStyle(styleDefaultCell);
+					mySheet.getRow(j).getCell(10).setCellStyle(styleNumberFormatCell);
 					mySheet.getRow(j).getCell(11).setCellValue(0);
-					mySheet.getRow(j).getCell(11).setCellStyle(styleDefaultCell);
+					mySheet.getRow(j).getCell(11).setCellStyle(styleNumberFormatCell);
 					break;
 			}
 		}
@@ -274,6 +317,11 @@ public class ExcelConstructor {
 		stylePercentageCell.setAlignment(HorizontalAlignment.CENTER);
 		stylePercentageCell.setDataFormat(this.wb.createDataFormat().getFormat("0.000%"));
 		
+		//NumberStyleCell
+		XSSFCellStyle styleNumberFormatCell = (XSSFCellStyle) this.wb.createCellStyle();
+		styleNumberFormatCell.setAlignment(HorizontalAlignment.CENTER);
+		styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+		
 		//PrefStyleCell
 		XSSFCellStyle styleDefaultPrefCell = (XSSFCellStyle) this.wb.createCellStyle();
 		XSSFCellStyle stylePrefCell = (XSSFCellStyle) this.wb.createCellStyle();
@@ -283,7 +331,9 @@ public class ExcelConstructor {
 		styleDefaultPrefCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		stylePrefCell.setFillForegroundColor(new XSSFColor(new Color(184, 204, 228)));
 		stylePrefCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
+		styleDefaultPrefCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+		stylePrefCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+		
 		// Create
 		XSSFTable table = mySheet.createTable();
 		table.setDisplayName("Tableau_trinucleotide_" + mySheet.getSheetName());
@@ -349,7 +399,7 @@ public class ExcelConstructor {
 					}
 				} else {
 					cell.setCellValue(0);
-					cell.setCellStyle(styleDefaultCell);
+					cell.setCellStyle(styleNumberFormatCell);
 				}
 				
 				if (j==2||j==4||j==6) {
@@ -374,6 +424,11 @@ public class ExcelConstructor {
 		stylePercentageCell.setAlignment(HorizontalAlignment.CENTER);
 		stylePercentageCell.setDataFormat(this.wb.createDataFormat().getFormat("0.000%"));
 
+		//NumberStyleCell
+		XSSFCellStyle styleNumberFormatCell = (XSSFCellStyle) this.wb.createCellStyle();
+		styleNumberFormatCell.setAlignment(HorizontalAlignment.CENTER);
+		styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+		
 		// Create
 		XSSFTable table = mySheet.createTable();
 		table.setDisplayName("Tableau_dinucleotide_" + mySheet.getSheetName());
@@ -429,7 +484,7 @@ public class ExcelConstructor {
 					cell.setCellStyle(styleCell);
 				} else {
 					cell.setCellValue(0);
-					cell.setCellStyle(styleDefaultCell);
+					cell.setCellStyle(styleNumberFormatCell);
 				}
 				
 				if(j==13||j==15) {
