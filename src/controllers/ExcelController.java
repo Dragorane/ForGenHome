@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import com.sun.media.sound.InvalidFormatException;
 
 import enums.Nucleotide;
 
@@ -129,6 +130,13 @@ public class ExcelController {
 	public void createNewSheetInExcel(String nameSheet) {
 		try {
 			Sheet res = this.wb.cloneSheet(1);
+
+			/* Test */
+			// XSSFSheet sheet = (XSSFSheet) this.wb.cloneSheet(1);
+			// for(XSSFTable tTemp : sheet.getTables()) {
+			// System.out.println(tTemp.getCTTable().toString());
+			// }
+
 			this.wb.setSheetName(this.wb.getSheetIndex(res), nameSheet);
 
 		} catch (Exception e) {
@@ -420,7 +428,7 @@ public class ExcelController {
 		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
 		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
 		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
-		
+
 		/*
 		 * Organisme Name line : 0, cell : 3
 		 */

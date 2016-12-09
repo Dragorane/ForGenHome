@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import com.sun.media.sound.InvalidFormatException;
 
 import project.Genome;
 import project.MainLauncher;
@@ -188,7 +188,7 @@ public class FileController {
 			String fileName = "";
 			String sheetName = "";
 			// long nbSeq = 0;
-			
+
 			switch (location) {
 			case "subgroup":
 				fileName = dirName + "/Total_" + genome.getSubgroup() + ".xlsx";
@@ -263,7 +263,7 @@ public class FileController {
 				default:
 					System.out.println("Error location : " + location + " for Genome : " + genome.getName());
 				}
-				
+
 				excel.addingNbSeq(resultats.get(8).get("nbCDS").doubleValue(),
 						resultats.get(8).get("nbCDSDinucleotide").doubleValue());
 			}

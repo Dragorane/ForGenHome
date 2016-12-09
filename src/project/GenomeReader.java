@@ -411,7 +411,7 @@ public class GenomeReader {
 			try {
 				ihm_log.addLog("Erreur de connexion");
 				if (nbRelance <= 3) {
-					ihm_log.addLog("Tentative de relance dans 5 secondes, relance n�" + nbRelance);
+					ihm_log.addLog("Tentative de relance dans 5 secondes, relance numero " + nbRelance);
 					Thread.sleep(5000);
 					nbRelance += 1;
 					recupererGCF(genome, 1);
