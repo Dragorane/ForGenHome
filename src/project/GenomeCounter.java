@@ -326,7 +326,7 @@ public class GenomeCounter extends Thread {
 						if (optionInfo) {
 							FileController.sauvegarderInfos(genome, sequence_info.get(1));
 						}
-
+						
 						resultatsSequenceTemp = null;
 						String typeName = "";
 						// Pour les sequences recuperees, on ajoute les

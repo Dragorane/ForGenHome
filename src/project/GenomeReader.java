@@ -199,13 +199,16 @@ public class GenomeReader {
 		String[] toRemove = { "*", "?", "<", ">", ":", "/", "\\", "\"", "=", "," };
 		for (String c : toRemove) {
 			if (name.contains(c)) {
-				name = name.replaceAll(c, " ").trim();
+				name = name.replace(c, " ").trim();
+				name = name.replaceAll("\\s{1}\\s+", " ");
 			}
 			if(group.contains(c)) {
-				group = group.replaceAll(c, " ").trim();
+				group = group.replace(c, " ").trim();
+				group = group.replaceAll("\\s{1}\\s+", " ");
 			}
 			if(subgroup.contains(c)) {
-				subgroup = subgroup.replaceAll(c, " ").trim();
+				subgroup = subgroup.replace(c, " ").trim();
+				subgroup = subgroup.replaceAll("\\s{1}\\s+", " ");
 			}
 		}
 		
@@ -294,11 +297,12 @@ public class GenomeReader {
 
 	private boolean isUptoDate(Genome genome) {
 		String path = genome.getChemin();
-		File f = new File(path + "\\updateDate.txt");
-
+		//System.out.println(path);
+		File f = new File(path+genome.getName().replaceAll(" ", "_")+"_updateDate.txt");
+		//System.out.println("Test isUptoDate fileName : " +f.getName());
 		if (f.exists() && !f.isDirectory()) {
 			try {
-				BufferedReader in = new BufferedReader(new FileReader(path + "\\updateDate.txt"));
+				BufferedReader in = new BufferedReader(new FileReader(path+genome.getName().replaceAll(" ", "_")+"_updateDate.txt"));
 				String line;
 				String val = "";
 				while ((line = in.readLine()) != null) {
@@ -314,7 +318,7 @@ public class GenomeReader {
 								.parseInt(genome.getUpdateDate().substring(0, 4))) {
 							return true;
 						} else {
-							FileController.createUpdateFile(path + "\\updateDate.txt", genome);
+							FileController.createUpdateFile(path+genome.getName().replaceAll(" ", "_")+"_updateDate.txt", genome);
 							return false;
 						}
 					}

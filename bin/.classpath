@@ -12,10 +12,10 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/lombok.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
-	<classpathentry kind="lib" path="D:/Users/Jean-François/Documents/GitHub/ForGenHome/lib/poi-3.16-beta1.jar"/>
-	<classpathentry kind="lib" path="D:/Users/Jean-François/Documents/GitHub/ForGenHome/lib/poi-excelant-3.16-beta1.jar"/>
-	<classpathentry kind="lib" path="D:/Users/Jean-François/Documents/GitHub/ForGenHome/lib/poi-ooxml-3.16-beta1.jar"/>
-	<classpathentry kind="lib" path="D:/Users/Jean-François/Documents/GitHub/ForGenHome/lib/poi-ooxml-schemas-3.16-beta1.jar"/>
-	<classpathentry kind="lib" path="D:/Users/Jean-François/Documents/GitHub/ForGenHome/lib/poi-scratchpad-3.16-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-3.16-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-excelant-3.16-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-3.16-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.16-beta1.jar"/>
+	<classpathentry kind="lib" path="lib/poi-scratchpad-3.16-beta1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

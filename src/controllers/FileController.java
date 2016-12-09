@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -168,7 +166,7 @@ public class FileController {
 	public static void savingResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats)
 			throws IOException, InvalidFormatException {
 		writingExcel(genome.getChemin(), genome, type, resultats, "organisme");
-		createUpdateFile(genome.getChemin() + "\\updateDate.txt", genome);
+		createUpdateFile(genome.getChemin()+genome.getName().replaceAll(" ", "_")+"_updateDate.txt", genome);
 		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "subgroup");
 		writingExcel(genome.getGroupChemin(), genome, type, resultats, "group");
 		writingExcel(genome.getKingdomChemin(), genome, type, resultats, "kingdom");
@@ -187,7 +185,7 @@ public class FileController {
 		try {
 			String fileName = "";
 			String sheetName = "";
-			// long nbSeq = 0;
+			//long nbSeq = 0;
 
 			switch (location) {
 			case "subgroup":
@@ -208,21 +206,21 @@ public class FileController {
 
 			if (type.equals("chrom")) {
 				sheetName = "Sum_Chromosome";
-				// nbSeq = genome.getNbSeqChrom();
+				//nbSeq = genome.getNbSeqChrom();
 			} else if (type.equals("plasm")) {
 				sheetName = "Sum_Plasmids";
-				// nbSeq = genome.getNbSeqPlasm();
+				//nbSeq = genome.getNbSeqPlasm();
 			} else if (type.equals("chloro")) {
 				sheetName = "Sum_Chloroplast";
-				// nbSeq = genome.getNbSeqChloro();
+				//nbSeq = genome.getNbSeqChloro();
 			} else if (type.equals("mito")) {
 				sheetName = "Sum_Mitochondrion";
-				// nbSeq = genome.getNbSeqMito();
+				//nbSeq = genome.getNbSeqMito();
 			}
 
 			ExcelController excel;
 
-			System.out.println("FileName : " + fileName);
+			//System.out.println("FileName : " + fileName);
 			File fichier = new File(fileName);
 			File dossier = new File(fileName);
 
@@ -231,14 +229,14 @@ public class FileController {
 			}
 
 			if (fichier.exists()) {
-				// System.out.println("File exist !! : " + fileName);
+				//System.out.println("File exist !! : " + fileName);
 				excel = ExcelController.openingExistingFile(fileName, sheetName);
 			} else {
-				// System.out.println("New Excel !! : " + fileName);
+				//System.out.println("New Excel !! : " + fileName);
 				excel = ExcelController.newExcel(fileName, sheetName);
 			}
 
-			// System.out.println("Debug excel name : " + excel.name);
+			//System.out.println("Debug excel name : " + excel.name);
 
 			if (resultats != null) {
 				excel.writingResults(resultats);
@@ -268,7 +266,7 @@ public class FileController {
 						resultats.get(8).get("nbCDSDinucleotide").doubleValue());
 			}
 
-			// excel.addingNbSeq(nbSeq);
+			//excel.addingNbSeq(nbSeq);
 
 			excel.saving();
 		} catch (Exception e) {
@@ -319,8 +317,7 @@ public class FileController {
 				// System.out.println("Debug excel : " + excel.toString());
 			} else {
 				// System.out.println("New Excel !! : " + fileName);
-				excel = ExcelController.newExcel(fileName);
-				excel.createNewSheetInExcel(newSheetName);
+				excel = ExcelController.newExcel(fileName, newSheetName);
 				excel.selectSheetFromExcel(newSheetName);
 				// System.out.println("Debug excel : " + excel.toString());
 			}
@@ -361,21 +358,5 @@ public class FileController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void createUpdateFile2(String string, Genome genome) {
-		Path p = Paths.get(string);
-		// System.out.println("Test createUpdateFile2 : " + p.toString());
-		if (java.nio.file.Files.exists(p)) {
-			try {
-				FileWriter fichier;
-				fichier = new FileWriter(string + "\\updateDate.txt");
-				fichier.write(genome.getUpdateDate());
-				fichier.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 }

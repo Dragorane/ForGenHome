@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import com.sun.media.sound.InvalidFormatException;
 
 import enums.Nucleotide;
+import excel.ExcelConstructor;
 
 /*
  * Class ExcelManager
@@ -65,7 +66,11 @@ public class ExcelController {
 			excel.name = name;
 			// excel.wb = WorkbookFactory.create(new File(name));
 			excel.sheet = excel.wb.getSheet(sheetName);
-
+			if(excel.sheet==null) {
+				ExcelConstructor constructor = new ExcelConstructor(excel.wb);
+				constructor.createNewSheet(sheetName);
+				excel.sheet = excel.wb.getSheet(sheetName);
+			}
 			return excel;
 		} catch (Exception e) {
 			System.out.println("Debug openingExistingFile ExcelController : " + e.getMessage());
@@ -79,13 +84,9 @@ public class ExcelController {
 		ExcelController res = new ExcelController();
 
 		try {
-			// System.out.println("Test name newExcel : " + name);
-			res.wb = WorkbookFactory.create(new File("base.xlsx"));
-			res.sheet = res.wb.getSheet(sheetName);
-			res.name = name;
-			// res.saving();
+			new ExcelConstructor(sheetName, name);
+			res = openingExistingFile(name, sheetName);
 			res.saving();
-
 			return res;
 		} catch (Exception e) {
 			System.out.println("Debug newExcel : " + e.getMessage() + " error : " + e.toString());
@@ -95,26 +96,26 @@ public class ExcelController {
 	}
 
 	// Creating a new excel file by using our starting file : base.xls
-	public static ExcelController newExcel(String name) throws IOException, InvalidFormatException {
-		ExcelController res = new ExcelController();
-
-		try {
-			if (name != null) {
-				// System.out.println("Test name newExcel : " + name);
-				res.wb = WorkbookFactory.create(new File("base.xlsx"));
-				res.name = name;
-				// res.saving();
-				res.saving();
-			} else {
-				System.out.println("Erreur newExcel, name null");
-			}
-			return res;
-		} catch (Exception e) {
-			System.out.println("Debug newExcel : " + e.getMessage() + " error : " + e.toString());
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	public static ExcelController newExcel(String name) throws IOException, InvalidFormatException {
+//		ExcelController res = new ExcelController();
+//
+//		try {
+//			if (name != null) {
+//				// System.out.println("Test name newExcel : " + name);
+//				res.wb = WorkbookFactory.create(new File("base.xlsx"));
+//				res.name = name;
+//				// res.saving();
+//				res.saving();
+//			} else {
+//				System.out.println("Erreur newExcel, name null");
+//			}
+//			return res;
+//		} catch (Exception e) {
+//			System.out.println("Debug newExcel : " + e.getMessage() + " error : " + e.toString());
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 
 	// Get a sheet
 	public void selectSheetFromExcel(String nameSheet) {
@@ -129,16 +130,14 @@ public class ExcelController {
 	// Create a new sheet
 	public void createNewSheetInExcel(String nameSheet) {
 		try {
-			Sheet res = this.wb.cloneSheet(1);
+			ExcelConstructor constructor = new ExcelConstructor(this.wb);
+			constructor.createNewSheet(nameSheet);
 
 			/* Test */
 			// XSSFSheet sheet = (XSSFSheet) this.wb.cloneSheet(1);
 			// for(XSSFTable tTemp : sheet.getTables()) {
 			// System.out.println(tTemp.getCTTable().toString());
 			// }
-
-			this.wb.setSheetName(this.wb.getSheetIndex(res), nameSheet);
-
 		} catch (Exception e) {
 			System.out.println("Debug createNewSheetInExcel : " + e.getMessage());
 			e.printStackTrace();
@@ -169,7 +168,7 @@ public class ExcelController {
 		HashMap<String, BigInteger> PrefPh0 = results.get(3);
 		HashMap<String, BigInteger> PrefPh1 = results.get(4);
 		HashMap<String, BigInteger> PrefPh2 = results.get(5);
-		HashMap<String, BigInteger> Informations = results.get(8);
+		//HashMap<String, BigInteger> Informations = results.get(8);
 
 		int ligneCourante = 8;
 
@@ -183,9 +182,9 @@ public class ExcelController {
 		BigDecimal totalPrefPh1 = new BigDecimal("0");
 		BigDecimal totalPrefPh2 = new BigDecimal("0");
 
-		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
-		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
-		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
+//		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
+//		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
+//		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
 
 		for (String nomTrinucleotide : generateTriNucleotides()) {
 			line = sheet.getRow(ligneCourante);
@@ -265,14 +264,14 @@ public class ExcelController {
 
 				if (j == 2 && totalPh0.intValue() != 0) {
 					pourcentage = valeur.divide(totalPh0, 10, BigDecimal.ROUND_CEILING);
-					pourcentage = pourcentage.multiply(new BigDecimal("100"));
+					//pourcentage = pourcentage.multiply(new BigDecimal("100"));
 
 				} else if (j == 4 && totalPh1.intValue() != 0) {
 					pourcentage = valeur.divide(totalPh1, 10, BigDecimal.ROUND_CEILING);
-					pourcentage = pourcentage.multiply(new BigDecimal("100"));
+					//pourcentage = pourcentage.multiply(new BigDecimal("100"));
 				} else if (j == 6 && totalPh2.intValue() != 0) {
 					pourcentage = valeur.divide(totalPh2, 10, BigDecimal.ROUND_CEILING);
-					pourcentage = pourcentage.multiply(new BigDecimal("100"));
+					//pourcentage = pourcentage.multiply(new BigDecimal("100"));
 				}
 
 				cell.setCellValue(pourcentage.doubleValue());
@@ -280,27 +279,27 @@ public class ExcelController {
 
 		}
 
-		/*
-		 * Nb nucleotide line : 2, cell : 3
-		 */
-		line = sheet.getRow(2);
-		cell = line.getCell(3);
-		cell.setCellValue(Informations.get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
-
-		/*
-		 * Nb cds sequences line : 3, cell : 3
-		 */
-		line = sheet.getRow(3);
-		cell = line.getCell(3);
-		cell.setCellValue(Informations.get("nbCDS").doubleValue() + Informations.get("nbInvalideCDS").doubleValue()
-				+ nbCDS.doubleValue() + nbInvalideCDS.doubleValue());
-
-		/*
-		 * Nb invalid cds line : 4, cell : 3
-		 */
-		line = sheet.getRow(4);
-		cell = line.getCell(3);
-		cell.setCellValue(Informations.get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
+//		/*
+//		 * Nb nucleotide line : 2, cell : 3
+//		 */
+//		line = sheet.getRow(2);
+//		cell = line.getCell(3);
+//		cell.setCellValue(Informations.get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
+//
+//		/*
+//		 * Nb cds sequences line : 3, cell : 3
+//		 */
+//		line = sheet.getRow(3);
+//		cell = line.getCell(3);
+//		cell.setCellValue(Informations.get("nbCDS").doubleValue() + Informations.get("nbInvalideCDS").doubleValue()
+//				+ nbCDS.doubleValue() + nbInvalideCDS.doubleValue());
+//
+//		/*
+//		 * Nb invalid cds line : 4, cell : 3
+//		 */
+//		line = sheet.getRow(4);
+//		cell = line.getCell(3);
+//		cell.setCellValue(Informations.get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
 
 		// Writing nbBase
 		line = sheet.getRow(3);
@@ -319,7 +318,7 @@ public class ExcelController {
 	public void writingResultDinucleotide(ArrayList<HashMap<String, BigInteger>> results) {
 		HashMap<String, BigInteger> Ph0Di = results.get(6);
 		HashMap<String, BigInteger> Ph1Di = results.get(7);
-		HashMap<String, BigInteger> Informations = results.get(8);
+		//HashMap<String, BigInteger> Informations = results.get(8);
 
 		int ligneCourante = 8;
 
@@ -329,9 +328,9 @@ public class ExcelController {
 		BigDecimal totalPh0Di = new BigDecimal("0");
 		BigDecimal totalPh1Di = new BigDecimal("0");
 
-		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
-		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
-		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
+//		BigDecimal nbCDS = new BigDecimal(sheet.getRow(3).getCell(3).toString());
+//		BigDecimal nbInvalideCDS = new BigDecimal(sheet.getRow(4).getCell(3).toString());
+//		BigDecimal nbNucleotide = new BigDecimal(sheet.getRow(2).getCell(3).toString());
 
 		// Manages the numbers
 		for (int i = 0; i < 4; i++) {
@@ -376,38 +375,38 @@ public class ExcelController {
 
 				if (j == 13 && totalPh0Di.intValue() != 0) {
 					pourcentage = valeur.divide(totalPh0Di, 10, BigDecimal.ROUND_CEILING);
-					pourcentage = pourcentage.multiply(new BigDecimal("100"));
+					//pourcentage = pourcentage.multiply(new BigDecimal("100"));
 
 				} else if (j == 15 && totalPh1Di.intValue() != 0) {
 					pourcentage = valeur.divide(totalPh1Di, 10, BigDecimal.ROUND_CEILING);
-					pourcentage = pourcentage.multiply(new BigDecimal("100"));
+					//pourcentage = pourcentage.multiply(new BigDecimal("100"));
 				}
 
 				cell.setCellValue(pourcentage.doubleValue());
 			}
 		}
 
-		/*
-		 * Nb nucleotide line : 2, cell : 3
-		 */
-		line = sheet.getRow(2);
-		cell = line.getCell(3);
-		cell.setCellValue(Informations.get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
-
-		/*
-		 * Nb cds sequences line : 3, cell : 3
-		 */
-		line = sheet.getRow(3);
-		cell = line.getCell(3);
-		cell.setCellValue(Informations.get("nbCDS").doubleValue() + Informations.get("nbInvalideCDS").doubleValue()
-				+ nbCDS.doubleValue() + nbInvalideCDS.doubleValue());
-
-		/*
-		 * Nb invalid cds line : 4, cell : 3
-		 */
-		line = sheet.getRow(4);
-		cell = line.getCell(3);
-		cell.setCellValue(Informations.get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
+//		/*
+//		 * Nb nucleotide line : 2, cell : 3
+//		 */
+//		line = sheet.getRow(2);
+//		cell = line.getCell(3);
+//		cell.setCellValue(Informations.get("nbNucleotide").doubleValue() + nbNucleotide.doubleValue());
+//
+//		/*
+//		 * Nb cds sequences line : 3, cell : 3
+//		 */
+//		line = sheet.getRow(3);
+//		cell = line.getCell(3);
+//		cell.setCellValue(Informations.get("nbCDS").doubleValue() + Informations.get("nbInvalideCDS").doubleValue()
+//				+ nbCDS.doubleValue() + nbInvalideCDS.doubleValue());
+//
+//		/*
+//		 * Nb invalid cds line : 4, cell : 3
+//		 */
+//		line = sheet.getRow(4);
+//		cell = line.getCell(3);
+//		cell.setCellValue(Informations.get("nbInvalideCDS").doubleValue() + nbInvalideCDS.doubleValue());
 
 		// Writing nbBases
 		line = sheet.getRow(3);

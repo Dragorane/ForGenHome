@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -33,16 +34,16 @@ public class ExcelConstructor {
 
 	private Workbook wb;
 
-	public ExcelConstructor(String sheetName) {
+	public ExcelConstructor(String sheetName, String docName) {
 		try {
 			/* Start with Creating a workbook and worksheet object */
 			this.wb = new XSSFWorkbook();
-			this.createNewSheet(wb, sheetName);
+			this.createNewSheet(sheetName);
 
 			/* Write output as File */
 			FileOutputStream fileOut;
 
-			fileOut = new FileOutputStream("Excel_Format_As_Table.xlsx");
+			fileOut = new FileOutputStream(docName);
 			wb.write(fileOut);
 			fileOut.close();
 		} catch (Exception e) {
@@ -50,9 +51,13 @@ public class ExcelConstructor {
 			e.printStackTrace();
 		}
 	}
+	
+	public ExcelConstructor(Workbook excel) {
+		this.wb = excel;
+	}
 
-	private void createNewSheet(Workbook wb, String sheetName) {
-		XSSFSheet newSheet = (XSSFSheet) wb.createSheet(sheetName);
+	public void createNewSheet(String sheetName) {
+		XSSFSheet newSheet = (XSSFSheet) this.wb.createSheet(sheetName);
 
 		this.stylizedSheet(newSheet);
 	}
@@ -263,6 +268,21 @@ public class ExcelConstructor {
 		XSSFFont fontBold = (XSSFFont) this.wb.createFont();
 		fontBold.setBold(true);
 		styleCell.setFont(fontBold);
+		
+		//PercentageStyleCell
+		XSSFCellStyle stylePercentageCell = (XSSFCellStyle) this.wb.createCellStyle();
+		stylePercentageCell.setAlignment(HorizontalAlignment.CENTER);
+		stylePercentageCell.setDataFormat(this.wb.createDataFormat().getFormat("0.000%"));
+		
+		//PrefStyleCell
+		XSSFCellStyle styleDefaultPrefCell = (XSSFCellStyle) this.wb.createCellStyle();
+		XSSFCellStyle stylePrefCell = (XSSFCellStyle) this.wb.createCellStyle();
+		styleDefaultPrefCell.setAlignment(HorizontalAlignment.CENTER);
+		stylePrefCell.setAlignment(HorizontalAlignment.CENTER);
+		styleDefaultPrefCell.setFillForegroundColor(new XSSFColor(new Color(220, 230, 241)));
+		styleDefaultPrefCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		stylePrefCell.setFillForegroundColor(new XSSFColor(new Color(184, 204, 228)));
+		stylePrefCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
 		// Create
 		XSSFTable table = mySheet.createTable();
@@ -278,7 +298,9 @@ public class ExcelConstructor {
 		// Set which area the table should be placed in
 		AreaReference reference = new AreaReference(new CellReference(7, 0), new CellReference(72, 9));
 		cttable.setRef(reference.formatAsString());
-		cttable.setId(1);
+		Random rng = new Random();
+		int randomNumber = rng.nextInt(10000 - 0) + 10000;
+		cttable.setId(randomNumber);
 		cttable.setDisplayName("TABLE_TRINUCLEOTIDE_" + mySheet.getSheetName());
 		cttable.setName(mySheet.getSheetName() + "_trinucleotide");
 
@@ -304,6 +326,8 @@ public class ExcelConstructor {
 			for (int j = 0; j < 10; j++) {
 				// Create cell
 				cell = row.createCell(j);
+				
+				// j == 7/8/9
 				if (i == 7) {
 					cell.setCellValue(header.get(0));
 					header.remove(0);
@@ -315,9 +339,21 @@ public class ExcelConstructor {
 				} else if (j == 0 && trinucleotide.isEmpty()) {
 					cell.setCellValue("Total");
 					cell.setCellStyle(styleCell);
+				} else if(j>=7 && j<=9) {
+					if(i%2!=0) {
+						cell.setCellValue(0);
+						cell.setCellStyle(styleDefaultPrefCell);
+					} else {
+						cell.setCellValue(0);
+						cell.setCellStyle(stylePrefCell);
+					}
 				} else {
 					cell.setCellValue(0);
 					cell.setCellStyle(styleDefaultCell);
+				}
+				
+				if (j==2||j==4||j==6) {
+					cell.setCellStyle(stylePercentageCell);
 				}
 			}
 		}
@@ -332,6 +368,11 @@ public class ExcelConstructor {
 		XSSFFont fontBold = (XSSFFont) this.wb.createFont();
 		fontBold.setBold(true);
 		styleCell.setFont(fontBold);
+		
+		//PercentageStyleCell
+		XSSFCellStyle stylePercentageCell = (XSSFCellStyle) this.wb.createCellStyle();
+		stylePercentageCell.setAlignment(HorizontalAlignment.CENTER);
+		stylePercentageCell.setDataFormat(this.wb.createDataFormat().getFormat("0.000%"));
 
 		// Create
 		XSSFTable table = mySheet.createTable();
@@ -347,7 +388,9 @@ public class ExcelConstructor {
 		// Set which area the table should be placed in
 		AreaReference reference = new AreaReference(new CellReference(7, 11), new CellReference(24, 15));
 		cttable.setRef(reference.formatAsString());
-		cttable.setId(2);
+		Random rng = new Random();
+		int randomNumber = rng.nextInt(10000 - 0) + 10000;
+		cttable.setId(randomNumber);
 		cttable.setDisplayName("TABLE_DINUCLEOTIDE_" + mySheet.getSheetName());
 		cttable.setName(mySheet.getSheetName() + "_dinucleotide");
 
@@ -387,6 +430,10 @@ public class ExcelConstructor {
 				} else {
 					cell.setCellValue(0);
 					cell.setCellStyle(styleDefaultCell);
+				}
+				
+				if(j==13||j==15) {
+					cell.setCellStyle(stylePercentageCell);
 				}
 			}
 		}
