@@ -69,6 +69,12 @@ public class Interface extends JFrame {
 	public JCheckBox check_hide;
 
 	public JTextArea log_area;
+	public Integer nbEukae_current = 0;
+	public Integer nbProka_current = 0;
+	public Integer nbVirus_current = 0;
+	public Integer nbEukae_max = 0;
+	public Integer nbProka_max = 0;
+	public Integer nbVirus_max = 0;
 
 	public void addLog(String message) {
 		if (log_area.getText().isEmpty()) {
@@ -215,7 +221,7 @@ public class Interface extends JFrame {
 		this.progress_bar = new JProgressBar();
 		Dimension prefSize = this.progress_bar.getPreferredSize();
 
-		prefSize.width = 500;
+		prefSize.width = 700;
 		prefSize.height = 25;
 		this.progress_bar.setPreferredSize(prefSize);
 		progress_bar.setMaximum(10);
@@ -255,5 +261,53 @@ public class Interface extends JFrame {
 		this.add(principal, BorderLayout.CENTER);
 		this.add(area_start, BorderLayout.SOUTH);
 		this.setResizable(false);
+	}
+
+	public Integer getNbEukae_current() {
+		return nbEukae_current;
+	}
+
+	public void setNbEukae_current(Integer nbEukae_current) {
+		this.nbEukae_current = nbEukae_current;
+	}
+
+	public Integer getNbProka_current() {
+		return nbProka_current;
+	}
+
+	public void setNbProka_current(Integer nbProka_current) {
+		this.nbProka_current = nbProka_current;
+	}
+
+	public Integer getNbVirus_current() {
+		return nbVirus_current;
+	}
+
+	public void setNbVirus_current(Integer nbVirus_current) {
+		this.nbVirus_current = nbVirus_current;
+	}
+
+	public Integer getNbEukae_max() {
+		return nbEukae_max;
+	}
+
+	public void setNbEukae_max(Integer nbEukae_max) {
+		this.nbEukae_max = nbEukae_max;
+	}
+
+	public Integer getNbProka_max() {
+		return nbProka_max;
+	}
+
+	public void setNbProka_max(Integer nbProka_max) {
+		this.nbProka_max = nbProka_max;
+	}
+
+	public Integer getNbVirus_max() {
+		return nbVirus_max;
+	}
+
+	public void setNbVirus_max(Integer nbVirus_max) {
+		this.nbVirus_max = nbVirus_max;
 	}
 }

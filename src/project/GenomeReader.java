@@ -91,6 +91,14 @@ public class GenomeReader {
 
 	// S'occupe de l'affichage de la progressBar
 	private void afficheProgressBar() {
+		int value_proka = ihm_log.getNbProka_current();
+		int value_euka = ihm_log.getNbEukae_current();
+		int value_virus = ihm_log.getNbVirus_current();
+
+		int max_proka = ihm_log.getNbProka_max();
+		int max_euka = ihm_log.getNbEukae_max();
+		int max_virus = ihm_log.getNbVirus_max();
+
 		int value = ihm_log.progress_bar.getValue();
 		int max = ihm_log.progress_bar.getMaximum();
 		String affichage = "";
@@ -103,7 +111,8 @@ public class GenomeReader {
 		int jours = (int) (tempsint / (3600 * 24));
 
 		if (tpsMoyen != 0 && getNombreSequencesLues() > 1) {
-			affichage = value + " / " + max + " ||| Temps restant : ";
+			affichage = "Virus : " + value_virus + "/" + max_virus + " | " + "Euka : " + value_euka + "/" + max_euka + " | "
+					+ "Proka : " + value_proka + "/" + max_proka + " ||| " + value + " / " + max + " ||| Temps restant : ";
 			if (jours != 0) {
 				affichage = affichage + jours + " j ";
 			}
@@ -132,51 +141,57 @@ public class GenomeReader {
 			if (!tmpFile.exists()) {
 				ihm_log.addLog("--- Telechargement de " + tmpFile.getName() + " ---");
 
-				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
+				//ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
 				// Verification du nom de fichier pour telecharger la bonne
 				// liste
 				if (tmpFile.getName().equals("prokaryotes.txt")) {
 					// System.out.println("Test prokaryotes");
 					DownloadTool.getFile(LINK_LIST_PROK, "prokaryotes.txt", 1);
-					
-					//Regarder combien de ligne dans le fichier pour ajouter ce nombre a la progress_barre
+
+					// Regarder combien de ligne dans le fichier pour ajouter ce
+					// nombre a la progress_barre
 					File f = new File("prokaryotes.txt");
 					int nbGenome = 0;
-					if(f.exists()) {
+					if (f.exists()) {
 						BufferedReader br = new BufferedReader(new FileReader(f));
 						while ((br.readLine()) != null) {
 							nbGenome++;
 						}
 						br.close();
 						ihm_log.progress_bar.setMaximum(ihm_log.progress_bar.getMaximum() + nbGenome);
+						ihm_log.setNbProka_max(nbGenome);
 					}
 				} else if (tmpFile.getName().equals("eukaryotes.txt")) {
 					DownloadTool.getFile(LINK_LIST_EUKA, "eukaryotes.txt", 1);
-					
-					//Regarder combien de ligne dans le fichier pour ajouter ce nombre a la progress_barre
+
+					// Regarder combien de ligne dans le fichier pour ajouter ce
+					// nombre a la progress_barre
 					File f = new File("eukaryotes.txt");
 					int nbGenome = 0;
-					if(f.exists()) {
+					if (f.exists()) {
 						BufferedReader br = new BufferedReader(new FileReader(f));
 						while ((br.readLine()) != null) {
 							nbGenome++;
 						}
 						br.close();
 						ihm_log.progress_bar.setMaximum(ihm_log.progress_bar.getMaximum() + nbGenome);
+						ihm_log.setNbEukae_max(nbGenome);
 					}
 				} else if (tmpFile.getName().equals("viruses.txt")) {
 					DownloadTool.getFile(LINK_LIST_VIRUSES, "viruses.txt", 1);
-					
-					//Regarder combien de ligne dans le fichier pour ajouter ce nombre a la progress_barre
+
+					// Regarder combien de ligne dans le fichier pour ajouter ce
+					// nombre a la progress_barre
 					File f = new File("viruses.txt");
 					int nbGenome = 0;
-					if(f.exists()) {
+					if (f.exists()) {
 						BufferedReader br = new BufferedReader(new FileReader(f));
 						while ((br.readLine()) != null) {
 							nbGenome++;
 						}
 						br.close();
 						ihm_log.progress_bar.setMaximum(ihm_log.progress_bar.getMaximum() + nbGenome);
+						ihm_log.setNbVirus_max(nbGenome);
 					}
 				}
 			}
@@ -211,7 +226,7 @@ public class GenomeReader {
 		String group = "";
 		String subgroup = "";
 		String name = tabLigne[0];
-		//System.out.print("Test Name : " + name + "   ---- ");
+		// System.out.print("Test Name : " + name + " ---- ");
 		String bioproject = "";
 
 		if (kingdom.equals("Eukaryotes")) {
@@ -235,17 +250,18 @@ public class GenomeReader {
 				name = name.replace(c, " ").trim();
 				name = name.replaceAll("\\s{1}\\s+", " ");
 			}
-			if(group.contains(c)) {
+			if (group.contains(c)) {
 				group = group.replace(c, " ").trim();
 				group = group.replaceAll("\\s{1}\\s+", " ");
 			}
-			if(subgroup.contains(c)) {
+			if (subgroup.contains(c)) {
 				subgroup = subgroup.replace(c, " ").trim();
 				subgroup = subgroup.replaceAll("\\s{1}\\s+", " ");
 			}
 		}
-		
-		//System.out.println("   ---- Test Name after removing : " + name + "   ---- ");
+
+		// System.out.println(" ---- Test Name after removing : " + name + "
+		// ---- ");
 
 		genome = new Genome(kingdom, group, subgroup, name, bioproject);
 
@@ -276,7 +292,6 @@ public class GenomeReader {
 
 				} else {
 					ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-					ihm_log.addLog("");
 					// System.out.println(ihm_log.progress_bar.getValue());
 				}
 			} else {
@@ -295,7 +310,6 @@ public class GenomeReader {
 				}
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-				ihm_log.addLog("");
 			}
 		}
 
@@ -307,7 +321,6 @@ public class GenomeReader {
 				recupererRefSeqVir(genome, 1);
 			} else {
 				ihm_log.addLog("[ " + genome.getName() + " ] deja a jour!");
-				ihm_log.addLog("");
 			}
 		}
 		fichier = null;
@@ -315,18 +328,19 @@ public class GenomeReader {
 
 		updateTpsMoyen();
 		afficheProgressBar();
-		
+
 		return genome;
 	}
 
 	private boolean isUptoDate(Genome genome) {
 		String path = genome.getChemin();
-		//System.out.println(path);
-		File f = new File(path+genome.getName().replaceAll(" ", "_")+"_updateDate.txt");
-		//System.out.println("Test isUptoDate fileName : " +f.getName());
+		// System.out.println(path);
+		File f = new File(path + genome.getName().replaceAll(" ", "_") + "_updateDate.txt");
+		// System.out.println("Test isUptoDate fileName : " +f.getName());
 		if (f.exists() && !f.isDirectory()) {
 			try {
-				BufferedReader in = new BufferedReader(new FileReader(path+genome.getName().replaceAll(" ", "_")+"_updateDate.txt"));
+				BufferedReader in = new BufferedReader(
+						new FileReader(path + genome.getName().replaceAll(" ", "_") + "_updateDate.txt"));
 				String line;
 				String val = "";
 				while ((line = in.readLine()) != null) {
@@ -342,7 +356,8 @@ public class GenomeReader {
 								.parseInt(genome.getUpdateDate().substring(0, 4))) {
 							return true;
 						} else {
-							FileController.createUpdateFile(path+genome.getName().replaceAll(" ", "_")+"_updateDate.txt", genome);
+							FileController.createUpdateFile(
+									path + genome.getName().replaceAll(" ", "_") + "_updateDate.txt", genome);
 							return false;
 						}
 					}
@@ -551,7 +566,8 @@ public class GenomeReader {
 											if (tmpString3.startsWith("NCBI Reference Sequence")) {
 												String[] res3 = tmpString3.split(": ");
 												String refseq = res3[res3.length - 1];
-												//System.out.println("refseq : " + refseq);
+												// System.out.println("refseq :
+												// " + refseq);
 												String[] res = { refseq, "chrom" };
 												genome.getRefseq().add(res);
 												// ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);

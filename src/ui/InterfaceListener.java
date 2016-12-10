@@ -35,13 +35,11 @@ public class InterfaceListener implements ActionListener {
 					}
 
 					if (ihm.check_prokaryotes.isSelected()) {
-						ihm.progress_bar.setMaximum(ihm.progress_bar.getMaximum() + 56300);
 						MainLauncher.fichiersBioinfo.add("prokaryotes.txt");
 						FileController.cleaning("prokaryotes");
 					}
 
 					if (ihm.check_viruses.isSelected()) {
-						ihm.progress_bar.setMaximum(ihm.progress_bar.getMaximum() + 5100);
 						MainLauncher.fichiersBioinfo.add("viruses.txt");
 						FileController.cleaning("viruses");
 					}

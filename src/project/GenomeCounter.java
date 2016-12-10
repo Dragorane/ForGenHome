@@ -302,6 +302,7 @@ public class GenomeCounter extends Thread {
 				genome = getGenome.get(etat);
 
 				if (genome == null) {
+					System.out.println("Test Thread : " + file + " termine.");
 					etat.setEnd(true);
 					FileController.enregistrer(etat, file);
 					continue;
@@ -376,6 +377,12 @@ public class GenomeCounter extends Thread {
 				}
 				etat.increLine();
 				FileController.enregistrer(etat, file);
+				
+				switch(file) {
+				case "eukaryotes.txt": ihm_log.setNbEukae_current(ihm_log.getNbEukae_current()+1);break;
+				case "prokaryotes.txt":ihm_log.setNbProka_current(ihm_log.getNbProka_current()+1);break;
+				case "viruses.txt":ihm_log.setNbVirus_current(ihm_log.getNbVirus_current()+1);break;
+				}
 				
 				//FIN D'UN GENOME - BARRE DE PROGRESSION EVOLUE ICI !
 				ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()+1);
