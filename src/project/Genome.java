@@ -84,7 +84,10 @@ public class Genome {
 		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/";
 
 	}
+	public String getCheminNoMain() {
+		return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/";
 
+	}
 	public String getMainDir() {
 		return mainDir;
 	}

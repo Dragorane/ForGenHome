@@ -1,16 +1,14 @@
 package controllers;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.sun.media.sound.InvalidFormatException;
 
@@ -95,24 +93,50 @@ public class FileController {
 	}
 
 	// Possibility of saving 'genes' used (option)
-	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) {
-		String dossier = genome.getChemin() + "/Gene";
+	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) throws IOException {
+		String dossier = "Gene/" + genome.getCheminNoMain();
 		bewFile(dossier);
+		ArrayList<String> listeNomFichier = new ArrayList<String>();
 
-		String fichier = dossier + "/infos.txt";
 
+		char[] affichage = new char[10];
+
+	int i = 1;
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
-
 			for (String record : infos) {
+				out = null;
+				String fichier = dossier + "/gene_" + i + ".txt";
+				out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 				out.println(record);
+				out.close();
+				listeNomFichier.add("gene_"+i+".txt");
+				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			out.close();
 		}
+
+
+		FileOutputStream fos = new FileOutputStream(dossier + "/" + "genes.zip");
+		ZipOutputStream zipOut = new ZipOutputStream(fos);
+		for (String srcFile : listeNomFichier) {
+			File fileToZip = new File(dossier + "/" + srcFile);
+			FileInputStream fis = new FileInputStream(fileToZip);
+			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+			zipOut.putNextEntry(zipEntry);
+
+			byte[] bytes = new byte[1024];
+			int length;
+			while((length = fis.read(bytes)) >= 0) {
+				zipOut.write(bytes, 0, length);
+			}
+			fis.close();
+			fileToZip.delete();
+		}
+		zipOut.close();
+		fos.close();
+
 	}
 
 	// Saving the state
