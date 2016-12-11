@@ -88,7 +88,7 @@ public class ExcelConstructor {
         //NumberStyleCell 1
         XSSFCellStyle styleNumberFormatCell = (XSSFCellStyle) this.wb.createCellStyle();
         styleNumberFormatCell.setAlignment(HorizontalAlignment.CENTER);
-        styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+        styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("### ### ##0"));
         styleNumberFormatCell.setBorderBottom(BorderStyle.THIN);
         styleNumberFormatCell.setBottomBorderColor(new XSSFColor(new Color(149, 179, 215)));
         styleNumberFormatCell.setBorderLeft(BorderStyle.THIN);
@@ -101,7 +101,7 @@ public class ExcelConstructor {
         //NumberStyleCell2
         XSSFCellStyle styleNumberFormatCell2 = (XSSFCellStyle) this.wb.createCellStyle();
         styleNumberFormatCell2.setAlignment(HorizontalAlignment.CENTER);
-        styleNumberFormatCell2.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+        styleNumberFormatCell2.setDataFormat(this.wb.createDataFormat().getFormat("### ### ##0"));
         styleNumberFormatCell2.setFillForegroundColor(new XSSFColor(new Color(220, 230, 241)));
         styleNumberFormatCell2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         styleNumberFormatCell2.setBorderBottom(BorderStyle.THIN);
@@ -308,7 +308,7 @@ public class ExcelConstructor {
         //NumberStyleCell
         XSSFCellStyle styleNumberFormatCell = (XSSFCellStyle) this.wb.createCellStyle();
         styleNumberFormatCell.setAlignment(HorizontalAlignment.CENTER);
-        styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+        styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("### ### ##0"));
 
         //PrefStyleCell
         XSSFCellStyle styleDefaultPrefCell = (XSSFCellStyle) this.wb.createCellStyle();
@@ -319,8 +319,8 @@ public class ExcelConstructor {
         styleDefaultPrefCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         stylePrefCell.setFillForegroundColor(new XSSFColor(new Color(184, 204, 228)));
         stylePrefCell.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        styleDefaultPrefCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
-        stylePrefCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+        styleDefaultPrefCell.setDataFormat(this.wb.createDataFormat().getFormat("### ### ##0"));
+        stylePrefCell.setDataFormat(this.wb.createDataFormat().getFormat("### ### ##0"));
 
         // Create
         XSSFTable table = mySheet.createTable();
@@ -415,7 +415,7 @@ public class ExcelConstructor {
         //NumberStyleCell
         XSSFCellStyle styleNumberFormatCell = (XSSFCellStyle) this.wb.createCellStyle();
         styleNumberFormatCell.setAlignment(HorizontalAlignment.CENTER);
-        styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("# ##0"));
+        styleNumberFormatCell.setDataFormat(this.wb.createDataFormat().getFormat("### ### ##0"));
 
         // Create
         XSSFTable table = mySheet.createTable();

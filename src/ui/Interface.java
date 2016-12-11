@@ -80,13 +80,12 @@ public class Interface extends JFrame {
 		if (log_area.getText().isEmpty()) {
 			log_area.setText(message);
 		} else {
-			if (log_area.getText().length() > 100000) {
+			if (log_area.getText().length() > 50000) {
 				log_area.setText(message);
 			} else {
 				log_area.setText(log_area.getText() + "\n" + message);
 			}
 		}
-
 	}
 
 	/**
