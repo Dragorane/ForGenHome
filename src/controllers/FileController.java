@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -70,10 +72,10 @@ public class FileController {
 
 	// Saving sequences of a genome (in option)
 	public static void sauvegarderSequence(Genome genome, String refseq, String sequence) {
-		String dossier = genome.getChemin() + "/Genome/";
+		String dossier = "Genome/" + genome.getCheminNoMain();
 		bewFile(dossier);
 
-		String fichier = dossier + refseq + ".txt";
+		String fichier = dossier + "Genome_" + genome.getName() + ".txt";
 
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
@@ -100,17 +102,27 @@ public class FileController {
 
 
 		char[] affichage = new char[10];
+		String nomGene = new String();
 
 	int i = 1;
 		PrintWriter out = null;
 		try {
 			for (String record : infos) {
 				out = null;
-				String fichier = dossier + "/gene_" + i + ".txt";
+
+				Pattern pattern = Pattern.compile("\\[gene=(.*?)\\]");
+				Matcher matcher = pattern.matcher(record);
+				matcher.find();
+				nomGene = matcher.group();
+				// De la forme [gene=REGEX]
+				// Donc on retire les 6 premiers caratères et le dernier
+				nomGene = nomGene.substring(6, nomGene.length()-1);
+
+				String fichier = dossier + "/" + nomGene + "_" + i + "_" + genome.getName() + ".txt";
 				out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 				out.println(record);
 				out.close();
-				listeNomFichier.add("gene_"+i+".txt");
+				listeNomFichier.add(nomGene + "_" + i + "_" + genome.getName() + ".txt");
 				i++;
 			}
 		} catch (IOException e) {
