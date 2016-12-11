@@ -310,6 +310,7 @@ public class GenomeCounter extends Thread {
 
 				// Si le genome n'existe pas, ou s'il existe mais que le
 				// traitement a ete arrete au milieu
+				genome.setListeSequence(new ArrayList<String>());
 				if (!genome.exists() && genome.getRefseq().size() != 0) {
 					ihm_log.addLog("\n--- Nouvel organisme : " + genome + "---");
 					ihm_log.addLog("Contenu dans " + etat.getNomFichier() + " [ " + (etat.getLineNumber() + 1) + " ]");
@@ -375,9 +376,15 @@ public class GenomeCounter extends Thread {
 						FileController.savingResults(genome, "mito", resultatsMito);
 					}
 				}
+
+
+
+
 				etat.increLine();
 				FileController.enregistrer(etat, file);
-				
+				if (optionSequence)
+					FileController.sauvegarderGenome(genome);
+
 				switch(file) {
 				case "eukaryotes.txt": ihm_log.setNbEukae_current(ihm_log.getNbEukae_current()+1);break;
 				case "prokaryotes.txt":ihm_log.setNbProka_current(ihm_log.getNbProka_current()+1);break;

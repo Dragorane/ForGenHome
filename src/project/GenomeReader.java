@@ -399,9 +399,8 @@ public class GenomeReader {
 			while ((ligneCourante = br.readLine()) != null) {
 				// Saving the sequence if it's checked in options
 				if (sauvegardeSequence) {
-					FileController.sauvegarderSequence(genome, refseq, ligneCourante);
+					genome.addListeSequence(ligneCourante);
 				}
-
 				// If the line starts with >, it means it's a new sequence
 				if (ligneCourante.startsWith(">")) {
 					infos.add(ligneCourante);

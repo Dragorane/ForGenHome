@@ -1,16 +1,16 @@
 package controllers;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import com.sun.media.sound.InvalidFormatException;
 
@@ -70,16 +70,16 @@ public class FileController {
 
 	}
 
-	// Saving sequences of a genome (in option)
-	public static void sauvegarderSequence(Genome genome, String refseq, String sequence) {
-		String dossier = genome.getChemin() + "/Genome/";
+	// Saving a genome (in option)
+	public static void sauvegarderGenome(Genome genome) {
+		String dossier = "Genome/" + genome.getCheminNoMain();
 		bewFile(dossier);
-
-		String fichier = dossier + refseq + ".txt";
-
+		String fichier = dossier + "Genome_" + genome.getName() + ".txt";
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
-			out.println(sequence);
+			for (String record : genome.getListeSequence()) {
+				out.println(record);
+			}
 			out.close();
 		}
 
@@ -95,24 +95,72 @@ public class FileController {
 	}
 
 	// Possibility of saving 'genes' used (option)
-	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) {
-		String dossier = genome.getChemin() + "/Gene";
+	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) throws IOException {
+		String dossier = "Gene/" + genome.getCheminNoMain();
 		bewFile(dossier);
+		ArrayList<String> listeNomFichier = new ArrayList<String>();
 
-		String fichier = dossier + "/infos.txt";
 
+		char[] affichage = new char[10];
+		String nomGene = new String();
+
+	int i = 1;
 		PrintWriter out = null;
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
-
 			for (String record : infos) {
-				out.println(record);
+				out = null;
+
+				Pattern pattern = Pattern.compile("\\[gene=(.*?)\\]");
+				Matcher matcher = pattern.matcher(record);
+				if (matcher.find()) {
+					nomGene = matcher.group();
+					// De la forme [gene=REGEX]
+					// Donc on retire les 6 premiers caratères et le dernier
+					nomGene = nomGene.substring(6, nomGene.length() - 1);
+
+					String fichier = dossier + "/" + nomGene + "_" + i + "_" + genome.getName() + ".txt";
+					out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
+					out.println(record);
+					out.close();
+					listeNomFichier.add(nomGene + "_" + i + "_" + genome.getName() + ".txt");
+					i++;
+				}
+				else // On enregistre quand meme le gene pour etudier pourquoi ça n'a pas marché
+				{
+					System.out.println("Nom du gène non trouvé pour les fichiers txt : " + dossier + "/" + genome.getName());
+
+					String fichier = dossier + "/Gene_" + i + "_" + genome.getName() + ".txt";
+					out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
+					out.println(record);
+					out.close();
+					listeNomFichier.add("Gene_" + i + "_" + genome.getName() + ".txt");
+					i++;
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			out.close();
 		}
+
+
+		FileOutputStream fos = new FileOutputStream(dossier + "/" + "genes_" + genome.getName() + ".zip");
+		ZipOutputStream zipOut = new ZipOutputStream(fos);
+		for (String srcFile : listeNomFichier) {
+			File fileToZip = new File(dossier + "/" + srcFile);
+			FileInputStream fis = new FileInputStream(fileToZip);
+			ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+			zipOut.putNextEntry(zipEntry);
+
+			byte[] bytes = new byte[1024];
+			int length;
+			while((length = fis.read(bytes)) >= 0) {
+				zipOut.write(bytes, 0, length);
+			}
+			fis.close();
+			fileToZip.delete();
+		}
+		zipOut.close();
+		fos.close();
+
 	}
 
 	// Saving the state

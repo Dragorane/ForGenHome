@@ -12,6 +12,19 @@ import lombok.Setter;
  */
 
 public class Genome {
+	private ArrayList<String>ListeSequence;
+
+	public ArrayList<String> getListeSequence() {
+		return ListeSequence;
+	}
+
+	public void setListeSequence(ArrayList<String> listeSequence) {
+		ListeSequence = listeSequence;
+	}
+	public void addListeSequence(String sequence)
+	{
+		ListeSequence.add(sequence);
+	}
 	private long nbSeqTemp;
 	@Getter
 	private String kingdom;
@@ -84,7 +97,10 @@ public class Genome {
 		return this.mainDir + "/" + this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/";
 
 	}
+	public String getCheminNoMain() {
+		return this.kingdom + "/" + this.getGroup() + "/" + this.getSubgroup() + "/" + this.getName() + "/";
 
+	}
 	public String getMainDir() {
 		return mainDir;
 	}
