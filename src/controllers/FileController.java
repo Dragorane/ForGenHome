@@ -95,7 +95,7 @@ public class FileController {
 	}
 
 	// Possibility of saving 'genes' used (option)
-	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos) throws IOException {
+	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos, ArrayList<String> sequence) throws IOException {
 		String dossier = "Gene/" + genome.getCheminNoMain();
 		bewFile(dossier);
 		ArrayList<String> listeNomFichier = new ArrayList<String>();
@@ -117,10 +117,25 @@ public class FileController {
 					// De la forme [gene=REGEX]
 					// Donc on retire les 6 premiers caratères et le dernier
 					nomGene = nomGene.substring(6, nomGene.length() - 1);
+					// Suppression des caracteres interdits par un espace
+
+
+					String[] toRemove = { "*", "?", "<", ">", ":", "/", "\\", "\"", "=", "," };
+					for (String c : toRemove) {
+						if (nomGene.contains(c)) {
+							nomGene = nomGene.replace(c, " ").trim();
+							nomGene = nomGene.replaceAll("\\s{1}\\s+", " ");
+						}
+					}
+
 
 					String fichier = dossier + "/" + nomGene + "_" + i + "_" + genome.getName() + ".txt";
 					out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 					out.println(record);
+					for (String seq : sequence)
+					{
+						out.println(seq);
+				}
 					out.close();
 					listeNomFichier.add(nomGene + "_" + i + "_" + genome.getName() + ".txt");
 					i++;
@@ -132,6 +147,11 @@ public class FileController {
 					String fichier = dossier + "/Gene_" + i + "_" + genome.getName() + ".txt";
 					out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 					out.println(record);
+
+					for (String seq : sequence)
+					{
+						out.println(seq);
+					}
 					out.close();
 					listeNomFichier.add("Gene_" + i + "_" + genome.getName() + ".txt");
 					i++;

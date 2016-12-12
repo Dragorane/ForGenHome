@@ -326,7 +326,7 @@ public class GenomeCounter extends Thread {
 
 						// On sauvegarder les infos (option)
 						if (optionInfo) {
-							FileController.sauvegarderInfos(genome, sequence_info.get(1));
+							FileController.sauvegarderInfos(genome, sequence_info.get(1), sequence_info.get(0));
 						}
 						
 						resultatsSequenceTemp = null;
