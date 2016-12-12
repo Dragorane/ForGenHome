@@ -1,6 +1,12 @@
 package controllers;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +34,7 @@ public class FileController {
 
 	// Cleaning all excel files
 	public static void cleaning(String nameKingdom) {
-		File etat = new File("state_"+nameKingdom+".txt");
+		File etat = new File("state_" + nameKingdom + ".txt");
 
 		if (etat.exists()) {
 			etat.delete();
@@ -95,16 +101,15 @@ public class FileController {
 	}
 
 	// Possibility of saving 'genes' used (option)
-	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos, ArrayList<String> sequence) throws IOException {
+	public static void sauvegarderInfos(Genome genome, ArrayList<String> infos, ArrayList<String> sequence)
+			throws IOException {
 		String dossier = "Gene/" + genome.getCheminNoMain();
 		bewFile(dossier);
 		ArrayList<String> listeNomFichier = new ArrayList<String>();
 
-
-		char[] affichage = new char[10];
 		String nomGene = new String();
 
-	int i = 1;
+		int i = 1;
 		PrintWriter out = null;
 		try {
 			for (String record : infos) {
@@ -119,7 +124,6 @@ public class FileController {
 					nomGene = nomGene.substring(6, nomGene.length() - 1);
 					// Suppression des caracteres interdits par un espace
 
-
 					String[] toRemove = { "*", "?", "<", ">", ":", "/", "\\", "\"", "=", "," };
 					for (String c : toRemove) {
 						if (nomGene.contains(c)) {
@@ -128,28 +132,26 @@ public class FileController {
 						}
 					}
 
-
 					String fichier = dossier + "/" + nomGene + "_" + i + "_" + genome.getName() + ".txt";
 					out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 					out.println(record);
-					for (String seq : sequence)
-					{
+					for (String seq : sequence) {
 						out.println(seq);
-				}
+					}
 					out.close();
 					listeNomFichier.add(nomGene + "_" + i + "_" + genome.getName() + ".txt");
 					i++;
-				}
-				else // On enregistre quand meme le gene pour etudier pourquoi ça n'a pas marché
+				} else // On enregistre quand meme le gene pour etudier pourquoi
+						// ça n'a pas marché
 				{
-					System.out.println("Nom du gène non trouvé pour les fichiers txt : " + dossier + "/" + genome.getName());
+					System.out.println(
+							"Nom du gène non trouvé pour les fichiers txt : " + dossier + "/" + genome.getName());
 
 					String fichier = dossier + "/Gene_" + i + "_" + genome.getName() + ".txt";
 					out = new PrintWriter(new BufferedWriter(new FileWriter(fichier, true)));
 					out.println(record);
 
-					for (String seq : sequence)
-					{
+					for (String seq : sequence) {
 						out.println(seq);
 					}
 					out.close();
@@ -161,7 +163,6 @@ public class FileController {
 			e.printStackTrace();
 		}
 
-
 		FileOutputStream fos = new FileOutputStream(dossier + "/" + "genes_" + genome.getName() + ".zip");
 		ZipOutputStream zipOut = new ZipOutputStream(fos);
 		for (String srcFile : listeNomFichier) {
@@ -172,7 +173,7 @@ public class FileController {
 
 			byte[] bytes = new byte[1024];
 			int length;
-			while((length = fis.read(bytes)) >= 0) {
+			while ((length = fis.read(bytes)) >= 0) {
 				zipOut.write(bytes, 0, length);
 			}
 			fis.close();
@@ -232,7 +233,7 @@ public class FileController {
 	public static void savingResults(Genome genome, String type, ArrayList<HashMap<String, BigInteger>> resultats)
 			throws IOException, InvalidFormatException {
 		writingExcel(genome.getChemin(), genome, type, resultats, "organisme");
-		createUpdateFile(genome.getChemin()+genome.getName().replaceAll(" ", "_")+"_updateDate.txt", genome);
+		createUpdateFile(genome.getChemin() + genome.getName().replaceAll(" ", "_") + "_updateDate.txt", genome);
 		writingExcel(genome.getSubGroupChemin(), genome, type, resultats, "subgroup");
 		writingExcel(genome.getGroupChemin(), genome, type, resultats, "group");
 		writingExcel(genome.getKingdomChemin(), genome, type, resultats, "kingdom");
@@ -251,7 +252,7 @@ public class FileController {
 		try {
 			String fileName = "";
 			String sheetName = "";
-			//long nbSeq = 0;
+			// long nbSeq = 0;
 
 			switch (location) {
 			case "subgroup":
@@ -272,21 +273,21 @@ public class FileController {
 
 			if (type.equals("chrom")) {
 				sheetName = "Sum_Chromosome";
-				//nbSeq = genome.getNbSeqChrom();
+				// nbSeq = genome.getNbSeqChrom();
 			} else if (type.equals("plasm")) {
 				sheetName = "Sum_Plasmids";
-				//nbSeq = genome.getNbSeqPlasm();
+				// nbSeq = genome.getNbSeqPlasm();
 			} else if (type.equals("chloro")) {
 				sheetName = "Sum_Chloroplast";
-				//nbSeq = genome.getNbSeqChloro();
+				// nbSeq = genome.getNbSeqChloro();
 			} else if (type.equals("mito")) {
 				sheetName = "Sum_Mitochondrion";
-				//nbSeq = genome.getNbSeqMito();
+				// nbSeq = genome.getNbSeqMito();
 			}
 
 			ExcelController excel;
 
-			//System.out.println("FileName : " + fileName);
+			// System.out.println("FileName : " + fileName);
 			File fichier = new File(fileName);
 			File dossier = new File(fileName);
 
@@ -295,14 +296,14 @@ public class FileController {
 			}
 
 			if (fichier.exists()) {
-				//System.out.println("File exist !! : " + fileName);
+				// System.out.println("File exist !! : " + fileName);
 				excel = ExcelController.openingExistingFile(fileName, sheetName);
 			} else {
-				//System.out.println("New Excel !! : " + fileName);
+				// System.out.println("New Excel !! : " + fileName);
 				excel = ExcelController.newExcel(fileName, sheetName);
 			}
 
-			//System.out.println("Debug excel name : " + excel.name);
+			// System.out.println("Debug excel name : " + excel.name);
 
 			if (resultats != null) {
 				excel.writingResults(resultats);
@@ -332,7 +333,7 @@ public class FileController {
 						resultats.get(8).get("nbCDSDinucleotide").doubleValue());
 			}
 
-			//excel.addingNbSeq(nbSeq);
+			// excel.addingNbSeq(nbSeq);
 
 			excel.saving();
 		} catch (Exception e) {
