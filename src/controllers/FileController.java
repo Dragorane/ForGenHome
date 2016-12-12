@@ -184,9 +184,7 @@ public class FileController {
 				e.printStackTrace();
 				System.out.println("Erreur enregistrer : " + e.toString());
 			}
-
 		}
-
 	}
 
 	public static StateController retrieveState(String file) {
