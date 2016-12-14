@@ -71,7 +71,10 @@ public class GenomeReader {
 	/*
 	 * Public functions
 	 */
-
+	public void resetDate()
+	{
+		depart = new Date();
+	}
 	// Modification du temps moyen
 	private void updateTpsMoyen() {
 
