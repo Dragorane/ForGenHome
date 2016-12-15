@@ -289,6 +289,7 @@ public class GenomeCounter extends Thread {
 
 		getGenome.getFiles(ihm_log, file);
 
+		getGenome.resetDate();
 		while (!etat.traitementTermine() && !stop) {
 			try {
 				Genome genome = null;

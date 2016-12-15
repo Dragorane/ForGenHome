@@ -72,6 +72,10 @@ public class GenomeReader {
 	 * Public functions
 	 */
 
+	public void resetDate() {
+		depart = new Date();
+	}
+
 	// Modification du temps moyen
 	private void updateTpsMoyen() {
 
@@ -111,8 +115,9 @@ public class GenomeReader {
 		int jours = (int) (tempsint / (3600 * 24));
 
 		if (tpsMoyen != 0 && getNombreSequencesLues() > 1) {
-			affichage = "Virus : " + value_virus + "/" + max_virus + " | " + "Euka : " + value_euka + "/" + max_euka + " | "
-					+ "Proka : " + value_proka + "/" + max_proka + " ||| " + value + " / " + max + " ||| Temps restant : ";
+			affichage = "Virus : " + value_virus + "/" + max_virus + " | " + "Euka : " + value_euka + "/" + max_euka
+					+ " | " + "Proka : " + value_proka + "/" + max_proka + " ||| " + value + " / " + max
+					+ " ||| Temps restant : ";
 			if (jours != 0) {
 				affichage = affichage + jours + " j ";
 			}
@@ -141,7 +146,8 @@ public class GenomeReader {
 			if (!tmpFile.exists()) {
 				ihm_log.addLog("--- Telechargement de " + tmpFile.getName() + " ---");
 
-				//ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue() + 1);
+				// ihm_log.progress_bar.setValue(ihm_log.progress_bar.getValue()
+				// + 1);
 				// Verification du nom de fichier pour telecharger la bonne
 				// liste
 				if (tmpFile.getName().equals("prokaryotes.txt")) {
