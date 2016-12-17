@@ -542,7 +542,7 @@ public class GenomeReader {
 		// System.out.println("BioProject : "+genome.getBioproject());
 		try {
 			if (genome != null && genome.getBioproject() != null) {
-				Document doc = Jsoup.connect("http://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject())
+				Document doc = Jsoup.connect("https://www.ncbi.nlm.nih.gov/bioproject/" + genome.getBioproject())
 						.timeout(60000).get();
 				Elements elements = doc.getElementsByTag("a");
 				if (elements != null) {
@@ -557,7 +557,7 @@ public class GenomeReader {
 						} else if (linkHref.startsWith("/nuccore/")) {
 							try {
 								// System.out.println("Link Href : "+linkHref);
-								Document doc2 = Jsoup.connect("http://www.ncbi.nlm.nih.gov" + linkHref).timeout(60000)
+								Document doc2 = Jsoup.connect("https://www.ncbi.nlm.nih.gov" + linkHref).timeout(60000)
 										.get();
 
 								// If we only need to download one file
