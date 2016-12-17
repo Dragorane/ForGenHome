@@ -110,7 +110,7 @@ public class Genome {
 	}
 
 	public boolean exists() {
-		File f = new File(this.getChemin());
+		File f = new File(this.getChemin() + this.getName() + ".xlsx");
 		if (f.exists()) {
 			return true;
 		} else {
