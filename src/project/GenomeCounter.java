@@ -424,7 +424,7 @@ public class GenomeCounter extends Thread {
 		}
 
 		if (maxCount == 1) {
-			res.add(i);
+			res.add(maxIndex);
 			return res;
 		} else {
 			for (i = 0; i < 3; i++) {
